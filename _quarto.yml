@@ -5,7 +5,7 @@ website:
   title: "Portfolio Cases- Gabriel Guerrero"
   favicon: Images/favicon.png
   back-to-top-navigation: true
-  repo-url: https://github.com/byui-math-dept/guerrero-gabriel-24.git
+  repo-url: https://github.com/josegabrielguerrero26/dsprojects.git
   repo-actions: [issue] #if you want to allow others to report issues on your site uncomment this line
 
   page-footer: 
@@ -23,24 +23,24 @@ website:
         file: index.qmd
       - text: "My Resume"
         file: resume.qmd
-      - text: "DS250 Projects"
+      - text: "Projects"
         file: 250_projects.qmd
-      - text: "DS350 Projects"
-        file: 350_projects.qmd
-      - text: "DS450 Projects"
-        file: 450_projects.qmd
-      - text: "DS460 Projects"
-        file: 460_projects.qmd
+      # - text: "DS350 Projects"
+      #  file: 350_projects.qmd
+      #- text: "DS450 Projects"
+      #  file: 450_projects.qmd
+      #- text: "DS460 Projects"
+      #  file: 460_projects.qmd
 
   sidebar:
-    - title: "DS 250 Projects"
+    - title: "Projects"
       style: "docked"
       background: light
       contents:
-        - text: "DS250 Projects"
+        - text: "Projects"
           file: 250_projects.qmd
         - text: "---"
-        - text: "Project 0"
+        - text: "Project 1"
           file: 250_Projects/project0.qmd
         - text: "---"
         - text: "Project 1"
@@ -58,9 +58,9 @@ website:
         - text: "Project 5"
           file: 250_Projects/project5.qmd
         - text: "---"
-        - text: "Project 6"
-          file: 250_Projects/project6.qmd
-        - text: "---"
+        #- text: "Project 6"
+        #  file: 250_Projects/project6.qmd
+        #- text: "---"
 
     - title: "DS 350 Projects"
       style: "docked"
