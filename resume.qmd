@@ -13,7 +13,7 @@ Technical Skills: Python, R, SQL, Tableau, Power BI, SAP, Google Cloud Platform,
 
 
 ## PROFESSIONAL EXPERIENCE
-- Sr Manager Data & Business Analytics, Hertz Global Holding | Jul 2020 – Present
+- Director Data & Business Analytics, Hertz Global Holding | Jul 2020 – Present
 - Director of Operations & Supply Chain, La Europea SA de CV, Spain-Mexico | Jul 2018 – Jul 2020
 - Sr. Continuous Improvement Manager, Sleep Number Corp, USA | Jun 2017 – Jun 2018
 - Project Manager, Utah Valley University, USA | Jan 2016- Jun 2017
