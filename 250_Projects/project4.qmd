@@ -1,0 +1,501 @@
+---
+title: "Can You Predict That?"
+subtitle: "Course DS 250"
+author: "Gabriel Guerrero"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+### Background
+
+The clean air act of 1970 was the beginning of the end for the use of asbestos in home building. By 1976, the U.S. Environmental Protection Agency (EPA) was given authority to restrict the use of asbestos in paint. Homes built during and before this period are known to have materials with asbestos YOu can read more about this ban.
+
+The state of Colorado has a large portion of their residential dwelling data that is missing the year built and they would like you to build a predictive model that can classify if a house is built pre 1980.
+
+Colorado gave you home sales data for the city of Denver from 2013 on which to train your model. They said all the column names should be descriptive enough for your modeling and that they would like you to use the latest machine learning methods.
+
+https://github.com/byuidatascience/data4dwellings/blob/master/data.md
+
+## Client Request
+The Client is a state agency in Colorado that is responsible for the health and safety of its residents. They have a large portion of their residential dwelling data that is missing the year built and they would like you to build a predictive model that can classify if a house is built pre 1980.
+
+## Elevator pitch
+This project aims to predict whether a house was built before 1980 based on various features such as the number of bedrooms, bathrooms, square footage, and more. The dataset used for this project contains information on various houses in Denver, Colorado, and the goal is to build a predictive model that can accurately classify whether a house was built before 1980.
+
+### Libraries and Tide Data
+```{python}
+#| label: libraries
+#| include: true
+
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import seaborn as sns
+from sklearn import tree
+import matplotlib.pyplot as plt # for graphs}
+from lets_plot import *
+LetsPlot.setup_html()
+
+```
+
+```{python}
+#| label: project-data
+#| code-summary: Load the data
+
+
+# data in local file
+#df = pd.read_json(r"C:\Users\Gabriel Guerrero\OneDrive - AVASA\BYU-I\DS 250 Data Coding\db-projects\flights_missing.json")
+
+
+
+df = pd.read_csv("https://github.com/byuidatascience/data4dwellings/raw/master/data-raw/dwellings_ml/dwellings_ml.csv")
+
+#online
+#https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json
+
+```
+```{python}
+#| label: Tide data
+#| code-summary: Tide data
+#| include: false
+
+df.tail(10)
+
+nan_count = df.isnull().sum().sum()
+print('Number of NaN values:', nan_count)
+
+df.describe(include = 'all')
+df.info()
+
+
+```
+
+```{python}
+#| label: Dropping columns
+#| code-summary: Dropping columns
+#| include: false
+
+
+df=df.drop(columns=['parcel'])
+```
+
+
+### Question 1: 
+
+**Create 2-3 charts that evaluate potential relationships between the home variables and before1980. Explain what you learn from the charts that could help a machine learning algorithm.**
+
+From the correlation I learn that the variables that have the highest correlation with the target variable are: ybuilt, qualityB, noncars, gartypenon to mention a few.
+
+
+```{python}
+#| label: Chart of relationships1
+#| code-summary: Chart of relationships1
+#| include: TRUE
+
+corrMatrix = df.corr()
+
+sns.heatmap(corrMatrix, annot=True, annot_kws={"size": 7})
+plt.title('Correlation Before Cleaning')
+plt.figure(figsize=(20, 10))
+plt.show()
+
+```
+
+```{python}
+#| label: summanry table 
+#| code-summary: Summary table
+#| include: FALSE
+
+
+#from ydata_profiling import ProfileReport, compare
+#report= ProfileReport(df=df, title="test")
+#report.to_notebook_iframe()
+
+```
+
+```{python}
+#| label: x data
+#| code-summary: x data
+#| include: true
+#| output: FALSE
+
+
+
+df_ready = df[['stories', 'arcstyle_END UNIT','arcstyle_ONE-STORY','arcstyle_TWO-STORY','basement','condition_Excel','condition_Good','gartype_Att','gartype_None','livearea','nocars','numbaths','quality_B','quality_C','yrbuilt','before1980' ]]
+
+print(df_ready)
+
+```
+
+
+```{python}
+#| label: Q1-1
+#| code-summary: Chart of relationships2
+#| include: TRUE
+
+corrMatrix = df_ready.corr()
+plt.title('Correlation After Cleaning')
+sns.heatmap(corrMatrix, annot=True, annot_kws={"size": 7})
+plt.figure(figsize=(20, 10))
+
+plt.show()
+
+```
+
+```{python}
+#| label: chart1
+#| code-summary: Chart1
+#| include: TRUE
+
+from plotnine import ggplot, aes, geom_boxplot, geom_point, geom_bar, labs, theme_minimal, theme, element_text
+
+# 1. Boxplot
+boxplot_chart = (
+    ggplot(df_ready, aes(x='yrbuilt', y='livearea')) +
+    geom_point() +
+    labs(title='Distribution of Home Values',
+         subtitle='Comparison year and living area',
+         x='Built Before 1980', 
+         y='Home Value') 
+    #theme(plot_title=element_text(color='black', size=16, face='bold'))
+)
+
+# 2. Scatter Plot 
+scatter_chart = (
+    ggplot(df_ready, aes(x='yrbuilt', y='basement', color='before1980')) +
+    geom_point(alpha=0.6) +
+    labs(title='ybuilt and basement',
+         subtitle='Colored by Homes Built Before and After 1980',
+         x='Square Footage', 
+         y='Price') +
+    #theme_minimal() +
+    theme(plot_title=element_text(color='black', size=16, face='bold'))
+)
+
+# 3. Bar Chahrt
+bar_chart = (
+    ggplot(df_ready, aes(x='nocars', fill='before1980')) +
+    geom_bar(position='dodge') +
+    labs(title='Comparaison of noncars and before 1980',
+         subtitle='Built Before and After 1980',
+         x='Neighborhood', 
+         y='Count')
+)
+
+# Display the charts
+print(boxplot_chart)
+print(scatter_chart)
+print(bar_chart)
+
+boxplot_chart.save('plot1.png') 
+scatter_chart.save('plot2.png') 
+bar_chart.save('plot3.png') 
+
+```
+
+
+![Picture_1](plot1.png)
+![Picture_2](plot2.png)
+![Picture_3](plot3.png)
+
+
+### Question 2: 
+
+**Build a classification model labeling houses as being built “before 1980” or “during or after 1980”. Your goal is to reach or exceed 90% accuracy. Explain your final model choice (algorithm, tuning parameters, etc) and describe what other models you tried.**
+
+```{python}
+
+#| label: building_model
+#| code-summary: building_model
+#| include: TRUE
+#| outcome: False
+ 
+X = df_ready[['stories', 'arcstyle_END UNIT','arcstyle_ONE-STORY','arcstyle_TWO-STORY','basement','condition_Excel','condition_Good','gartype_Att','gartype_None','nocars','numbaths','quality_B','quality_C']]
+
+y=df_ready['before1980']
+
+
+
+```
+```{python}
+#| label: training
+#| code-summary: training
+#| include: TRUE
+#| outcome: False
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+          X, y, test_size=0.3, random_state=1)
+
+
+```
+```{python}
+#| label: running_model
+#| code-summary: running_model
+#| include: TRUE
+#| outcome: False
+
+
+clf = tree.DecisionTreeClassifier(max_leaf_nodes=5500)
+clf = clf.fit(X_train, y_train)
+```
+
+
+```{python}
+#| label: Accuracy
+#| code-summary: Accuracy
+#| include: TRUE
+#| outcome: TRUE
+
+test_predictions=clf.predict(X_test)
+
+#Accuracy
+from sklearn.metrics import accuracy_score
+accuracy_score(y_test, test_predictions)
+
+
+
+```
+### Question 3:
+**Justify your classification model by discussing the most important features selected by your model. This discussion should include a feature importance chart and a description of the features.**
+
+The most important features selected by the model are: conditon Excel, gartype?none, quality?B, arctstyle-story, arcstyle-end-unit. It seems that the model will pick these features becasue it looks like there is a pattern of use of asbestos in paint in some houses by these specific features.
+
+```{python}
+#| label: importance
+#| code-summary: importance
+#| include: TRUE
+#| outcome: TRUE
+
+
+importance = clf.feature_importances_
+df = pd.DataFrame(list(zip(importance, X.columns.to_list())),columns =['importance', 'feature'])
+#print(importance,X.columns.to_list())
+
+df = df.sort_values(by='importance')
+df.head()
+
+```
+
+
+
+### Question 4:
+**Describe the quality of your classification model using 2-3 different evaluation metrics. You also need to explain how to interpret each of the evaluation metrics you use.**
+
+I have used the classification report to evaluate the model. The classification report provides a detailed breakdown of the model's performance on each class. It includes metrics such as precision, recall, and F1-score for each class.
+
+Precision is the ratio of true positives to the sum of true positives and false positives. It measures the accuracy of positive predictions, indicating the proportion of predictions labeled as positive that are actually correct.
+
+Recall is the ratio of true positives to the sum of true positives and false negatives. It measures the coverage of actual positives, showing the proportion of actual positive cases that are correctly identified by the model.
+
+```{python}
+#| label: evaluation_metrics
+#| code-summary: evaluation_metrics
+#| include: TRUE
+#| outcome: TRUE
+
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test, test_predictions))
+
+```
+
+# Strech
+
+**Repeat the classification model using 3 different algorithms. Display their Feature Importance, and Decision Matrix. Explian the differences between the models and which one you would recommend to the Client.**
+
+The models differes in the way they handle the data and the way they make predictions. The first model uses a logisitic regression classifier, which is a linear model that uses a logistic function to model the probability of a binary outcome. The second model uses k-nearest neighbors classifier, which is a non-parametric method that classifies data points based on the majority class of their k-nearest neighbors. The third model uses a decision tree classifier, which is a type of supervised learning algorithm that builds a tree-like model of decisions and their possible consequences. The last model is a randon forest classifier, which is an ensemble learning method that combines multiple decision trees to make predictions.
+
+Desicion tree classifer is the best model because it has the highest accuracy score and the lowest error rate.
+
+```{python}
+#| label: Functions
+#| code-summary: function
+#| include: TRUE
+#| outcome: FALSE
+
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+def print_score(clf, X_train, y_train, X_test, y_test, train=True):
+    if train:
+        pred = clf.predict(X_train)
+        clf_report = pd.DataFrame(classification_report(y_train, pred, output_dict=True))
+        print("Train Result:\n================================================")
+        print(f"Accuracy Score: {accuracy_score(y_train, pred) * 100:.2f}%")
+        print("_______________________________________________")
+        print(f"CLASSIFICATION REPORT:\n{clf_report}")
+        print("_______________________________________________")
+        print(f"Confusion Matrix: \n {confusion_matrix(y_train, pred)}\n")
+        
+    elif train==False:
+        pred = clf.predict(X_test)
+        clf_report = pd.DataFrame(classification_report(y_test, pred, output_dict=True))
+        print("Test Result:\n================================================")        
+        print(f"Accuracy Score: {accuracy_score(y_test, pred) * 100:.2f}%")
+        print("_______________________________________________")
+        print(f"CLASSIFICATION REPORT:\n{clf_report}")
+        print("_______________________________________________")
+        print(f"Confusion Matrix: \n {confusion_matrix(y_test, pred)}\n")
+```
+```{python}
+#| label: logistic_regression
+#| code-summary: logistic_regression
+#| include: TRUE
+#| outcome: TRUE
+
+
+from sklearn.linear_model import LogisticRegression
+
+lr_clf = LogisticRegression(solver='liblinear')
+lr_clf.fit(X_train, y_train)
+
+print_score(lr_clf, X_train, y_train, X_test, y_test, train=True)
+print_score(lr_clf, X_train, y_train, X_test, y_test, train=False)
+
+```
+
+```{python}
+#| label: Kneighbors
+#| code-summary: Kneighbors
+#| include: TRUE
+#| outcome: FALSE
+
+
+from sklearn.neighbors import KNeighborsClassifier
+
+knn_clf = KNeighborsClassifier()
+knn_clf.fit(X_train, y_train)
+
+print_score(knn_clf, X_train, y_train, X_test, y_test, train=True)
+print_score(knn_clf, X_train, y_train, X_test, y_test, train=False)
+
+```
+
+```{python}
+#| label: DecisionTreeClassifier
+#| code-summary: DecisionTreeClassifier
+#| include: TRUE
+#| outcome: FALSE
+
+
+from sklearn.tree import DecisionTreeClassifier
+
+tree_clf = DecisionTreeClassifier(random_state=42)
+tree_clf.fit(X_train, y_train)
+
+print_score(tree_clf, X_train, y_train, X_test, y_test, train=True)
+print_score(tree_clf, X_train, y_train, X_test, y_test, train=False)
+
+```
+
+```{python}
+
+#| label: RandomForestClassifier
+#| code-summary: RandomForestClassifier
+#| include: TRUE
+#| outcome: FALSE
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import RandomizedSearchCV
+
+rf_clf = RandomForestClassifier(n_estimators=1000, random_state=42)
+rf_clf.fit(X_train, y_train)
+
+print_score(rf_clf, X_train, y_train, X_test, y_test, train=True)
+print_score(rf_clf, X_train, y_train, X_test, y_test, train=False)
+
+```
+```{python}
+
+#| label: resumen1
+#| code-summary: resumen1
+#| include: FALSE
+#| outcome: FALSE
+
+
+test_score = accuracy_score(y_test, lr_clf.predict(X_test)) * 100
+train_score = accuracy_score(y_train, lr_clf.predict(X_train)) * 100
+
+results_df = pd.DataFrame(data=[["Logistic Regression", train_score, test_score]], 
+                          columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
+#results_df
+
+
+```
+
+
+```{python}
+
+#| label: resumen2
+#| code-summary: resumen2
+#| include: FALSE
+#| outcome: FALSE
+#| 
+test_score = accuracy_score(y_test, knn_clf.predict(X_test)) * 100
+train_score = accuracy_score(y_train, knn_clf.predict(X_train)) * 100
+
+# Create the new DataFrame with results
+results_df_2 = pd.DataFrame(data=[["K-nearest neighbors", train_score, test_score]], 
+                            columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
+
+# Use pd.concat instead of append
+results_df = pd.concat([results_df, results_df_2], ignore_index=True)
+
+#results_df
+
+```
+
+```{python}
+
+#| label: resumen3
+#| code-summary: resumen3
+#| include: FALSE
+#| outcome: FALSE
+
+test_score = accuracy_score(y_test, tree_clf.predict(X_test)) * 100
+train_score = accuracy_score(y_train, tree_clf.predict(X_train)) * 100
+
+results_df_2 = pd.DataFrame(data=[["Decision Tree Classifier", train_score, test_score]], 
+                          columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
+results_df = pd.concat([results_df, results_df_2], ignore_index=True)
+
+```
+
+```{python}
+#| label: resumen4
+#| code-summary: resumen4
+#| include: TRUE
+#| outcome: TRUE
+
+
+test_score = accuracy_score(y_test, rf_clf.predict(X_test)) * 100
+train_score = accuracy_score(y_train, rf_clf.predict(X_train)) * 100
+
+results_df_2 = pd.DataFrame(data=[["Random Forest Classifier", train_score, test_score]], 
+                          columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
+results_df = pd.concat([results_df, results_df_2], ignore_index=True)
+
+results_df
+
+```

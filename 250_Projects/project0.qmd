@@ -1,0 +1,112 @@
+---
+title: "Client Report - Introduction"
+subtitle: "Course DS 250"
+author: "Gabriel Guerrero"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+### Introduction
+__Objective: Preparation, and first example__
+
+_`Set up`and questions are included in this project ._
+
+
+### Libraries
+```{python}
+#| label: libraries
+#| include: true
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from lets_plot import *
+LetsPlot.setup_html()
+
+
+```
+### Elevator pitch
+This project aims to explore the different tools for future projects and also the use of markdown and Quarto for reports and documents.  It will also  use and explore the Python libraries `pandas`, `numpy`, and `plotly`.
+
+### Question 1: 
+**Finish the Course Setup, and post any questions to getting your environment working smoothly in your course Slack channel**
+
+I finished the Course Setup and I posted a question on Slack.
+
+### Question 2
+**Recreate the example chart from PY4DS: CH2 Data Visualization of the textbook**
+
+```{python}
+#| label: project-data
+#| code-summary: Load the data
+# Include and execute your code here
+from palmerpenguins import load_penguins
+df = penguins = load_penguins()
+```
+
+```{python}
+#| label: Describe
+#| code-summary: Tide data
+#| include: false
+
+df.describe()
+df.head(10)
+
+```
+
+```{python}
+#| label: Q1-chart
+#| code-summary: Plot 1
+#| fig-cap: "Penguins"
+#| fig-align: center
+
+(
+    ggplot(data=penguins, mapping=aes(x="flipper_length_mm", y="body_mass_g"))
+    + geom_point(mapping=aes(color="species", shape="species"))
+    + geom_smooth(method="lm")
+    + labs(
+        title="Body mass and flipper length",
+        subtitle="Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+        x="Flipper length (mm)",
+        y="Body mass (g)",
+        color="Species",
+        shape="Species",
+    )+
+    theme(plot_title=element_text(color='black', size=18, face='bold'))
+
+)
+
+```
+
+### Question 3
+**Include the table created from PY4DS: CH2 Data Visualization used to create the above chart**
+
+This is the table created from PY4DS.
+```{python}
+#| label: Q2-Table
+#| code-summary: Penguins Table
+#| tbl-cap: "Table 1"
+#| echo: false
+
+
+table=df.head(10)
+
+print(df.head(10).to_markdown())
+```

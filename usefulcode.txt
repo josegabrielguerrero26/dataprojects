@@ -1,0 +1,87 @@
+App
+https://vigilant-barnacle-7kje79m.pages.github.io/250_Projects/project0.html#introduction
+
+Comment and uncomment
+
+Ctrl + K + C: Comment the selected code (for line comments in most programming languages).
+Ctrl + K + U: Uncomment the selected code
+
+Render all cells
+Ctrl-Alt-R
+
+Run code
+Ctlr +shift+k
+
+Short by
+lights.sort_values(by = ['year', 'month', 'day'], ascending = False)
+
+Filter
+nov_dec = flights.query('month in [11, 12]')
+
+df.dtypes()
+df.info()
+
+query
+flights.query('month = 1')
+
+Comparasion
+jan1 = flights.query('month == 1 & day == 1')
+
+
+flights.filter(regex = '^sch'): matches column names that begin with “sch”.
+
+flights.filter(regex = "time$"): matches names that end with “time”.
+
+flights.filter(regex = "_dep_"): matches names that contain “dep”.
+
+flights.filter(regex = '(.)\\1'): selects variables that match a regular expression.
+
+Create columns
+flights_sml
+  .assign(
+    gain = lambda x: x.dep_delay - x.arr_delay,
+    hours = lambda x: x.air_time / 60,
+    gain_per_hour = lambda x: x.gain / x.hours
+  )
+
+Group 
+  by_dest = flights.groupby('dest')
+
+delay = by_dest.agg(
+    count = ('distance', 'size'),
+    dist = ('distance', np.mean),
+    delay = ('arr_delay', np.mean)
+    )
+
+Missing values
+not_cancelled = flights.dropna(subset = ['dep_delay', 'arr_delay']) 
+
+Ungroup
+dat = (not_cancelled
+        .groupby(['year', 'month','day'])
+        .agg(hour_prop = ('arr_delay', lambda x: np.sum(x > 60))))
+
+dat.reset_index().head()
+
+
+Grouped the worst rank
+flights_sml['ranks'] = (flights_sml
+                        .groupby(['year', 'month','day']).arr_delay
+                        .rank(ascending = False))
+
+flights_sml.query('ranks < 10').drop(columns = 'ranks')
+
+
+#facet
+(ggplot(mpg, aes(x="displ", y="hwy")) + geom_point() + facet_wrap("cyl"))
+
+# fillna
+nan_df.fillna(0)
+nan_df.fillna(value={"A": 0, "B": 1, "C": 2, "D": 3})# column A:0, B:1
+
+Replace
+stata_df.replace({-99: pd.NA})
+stata_df.replace({-99: pd.NA, -7: pd.NA})
+
+where
+f2.where(df2 > 0, df2['A'], axis='index')

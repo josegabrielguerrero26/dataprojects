@@ -1,0 +1,376 @@
+---
+title: "Finding Relationships in Baseball"
+subtitle: "Course DS 250"
+author: "Gabriel G"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+### Background
+
+When you hear the word “relationship” what is the first thing that comes to mind? Probably not baseball. But a relationship is simply a way to describe how two or more objects are connected. There are many relationships in baseball such as those between teams and managers, players and salaries, even stadiums and concession prices.
+
+The graphs on Data Visualizations from Best Tickets show many other relationships that exist in baseball.
+
+https://web.archive.org/web/20200804101201/http://www.besttickets.com/blog/mlb-players-census/
+
+## Client Request
+For this project, the Client wants SQL queries that they can use to retrieve data for use on their website without needing Python. They would also like to see the results in Plotly Express charts.
+
+## Elevator Pitch
+This project aims to explore the use of sql querry to retrieve data from a database and use it to create charts. Some metrics that we use is average salary, average batting throught the teams.
+
+### Libraries and Tide Data
+```{python}
+#| label: libraries
+#| include: true
+
+import sqlite3
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import urllib.request
+import tempfile
+
+```
+
+```{python}
+#| label: project-data
+#| code-summary: Load the data
+
+#C:\Users\Gabriel Guerrero\OneDrive - AVASA\BYU-I\DS 250 Data #Coding\db-projects\lahmansbaseballdb.sqlite
+
+# %%
+# careful to list your path to the file or save it in the same place as your .qmd or .py file
+sqlite_file = 'lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+q = 'SELECT * FROM allstarfull LIMIT 5'
+results = pd.read_sql_query(q,con)
+# Close the connection
+#con.close()
+
+```
+```{python}
+#| label: tables in db
+#| code-summary: show all tables in db
+#| output: FALSE
+
+# Querry
+sql = "SELECT name FROM sqlite_master WHERE type='table';"
+
+# Execute the query and load results into a DataFrame
+df_tables = pd.read_sql_query(sql, con)
+
+# Display the list of tables
+print(df_tables)
+
+
+```
+
+
+```{python}
+#| label: explore
+#| code-summary: explore-data
+#| output: FALSE
+
+df_columns = pd.read_sql_query("PRAGMA table_info(allstarfull);", con)
+print(df_columns)
+
+```
+
+## Question 1
+
+**Write an SQL query to create a new dataframe about baseball players who attended BYU-Idaho. The new table should contain five columns: playerID, schoolID, salary, and the yearID/teamID associated with each salary. Order the table by salary (highest to lowest) and print out the table in your report.** 
+
+```{python}
+#| label: q1
+#| output: true
+
+df1 = pd.read_sql_query("""
+    SELECT a.playerID, sc.schoolID, s.salary, a.yearID, a.teamID 
+    FROM allstarfull a
+    INNER JOIN salaries s ON a.playerID = s.playerID
+    INNER JOIN collegeplaying sc ON sc.playerID = a.playerID
+    WHERE sc.schoolID LIKE 'BYU'
+    ORDER BY s.salary DESC;
+    """, con)
+
+#markdown print
+print(df1.head(10).to_markdown())
+
+```
+```{python}
+#| output: FALSE
+
+#unique values
+
+df1['schoolID'].unique()
+
+```
+
+## Question 2
+**This three-part question requires you to calculate batting average (number of hits divided by the number of at-bats)**
+
+a. Write an SQL query that provides playerID, yearID, and batting average for players with at least 1 at bat that year. Sort the table from highest batting average to lowest, and then by playerid alphabetically. Show the top 5 results in your report.
+
+b. Use the same query as above, but only include players with at least 10 at bats that year. Print the top 5 results.
+
+c. Now calculate the batting average for players over their entire careers (all years combined). Only include players with at least 100 at bats, and print the top 5 results.
+
+```{python}
+#| output: false
+#| include: false
+
+pd.set_option('display.max_columns', None)
+df2 = pd.read_sql_query("""
+    SELECT * 
+    FROM teams LIMIT 5;
+    """, con)
+
+print(df2)
+```
+```{python}
+#| label: Question A
+#| code-summary: Question A
+#| output: true
+
+df2 = pd.read_sql_query("""
+    SELECT a.playerID, a.yearID, a.teamID, AVG(b.AB) AS average
+    FROM allstarfull a
+    INNER JOIN batting b ON a.playerID = b.playerID
+    GROUP BY a.playerID
+    ORDER BY average DESC;
+    """, con)
+
+
+#markdown print
+print(df2.head(6).to_markdown())
+
+```
+```{python}
+#| label: Question B 
+#| code-summary: Question B at least 10 at bats
+#| output: true
+
+df3 = pd.read_sql_query("""
+    SELECT a.playerID, a.yearID, a.teamID, AVG(b.AB) AS average
+    FROM allstarfull a
+    INNER JOIN batting b ON a.playerID = b.playerID
+    WHERE b.AB >= 10
+    GROUP BY a.playerID
+    ORDER BY average DESC;
+    """, con)
+
+
+#markdown print
+print(df3.head(6).to_markdown())
+
+```
+```{python}
+#| label: Question C 
+#| code-summary: Question C least 100 at bats
+#| output: true
+
+df4 = pd.read_sql_query("""
+    SELECT a.playerID, a.yearID, a.teamID, AVG(b.AB) AS average
+    FROM allstarfull a
+    INNER JOIN batting b ON a.playerID = b.playerID
+    WHERE b.AB >= 100
+    GROUP BY a.playerID
+    ORDER BY average DESC;
+    """, con)
+
+
+#markdown print
+print(df4.head(6).to_markdown())
+
+```
+
+## Question 3
+
+**Pick any two baseball teams and compare them using a metric of your choice (average salary, home runs, number of wins, etc). Write an SQL query to get the data you need, then make a graph using Plotly Express to visualize the comparison. What do you learn?**
+
+```{python}
+#| label: Question 3
+#| code-summary: Question 3 querry
+#| output: false
+'''
+df4 = pd.read_sql_query("""
+    SELECT t.teamID, t.name, round(AVG(b.AB),0) AS average_salary
+    FROM allstarfull a
+    INNER JOIN batting b ON a.playerID = b.playerID
+    INNER JOIN teams t ON a.teamID = t.teamID
+    WHERE t.teamID = 'COL' OR t.teamID = 'SLN'
+    GROUP BY a.teamID
+    ORDER BY average_salary DESC;
+    """, con)
+'''
+df4 = pd.read_sql_query("""
+    SELECT t.teamID, 
+          t.name, 
+          s.yearID, 
+          '$' || printf('%.2f', AVG(s.salary) / 1000000) || 'M' AS average_salary
+    FROM salaries s
+    INNER JOIN teams t ON s.teamID = t.teamID
+    WHERE t.name IN ('St. Louis Browns', 'Toronto Blue Jays')
+    GROUP BY t.teamID, t.name, s.yearID
+    ORDER BY t.name DESC, s.yearID DESC;
+""", con)
+
+#markdown print
+print(df4.head(30).to_markdown())
+
+```
+
+```{python}
+#| label: Question 3 plotty
+#| code-summary: Question 3 Graph
+#| output: true
+
+import plotly.graph_objects as go
+# Convert average_salary to a numeric value (removing $ and M for plotting)
+df4['average_salary_numeric'] = df4['average_salary'].str.replace('$', '').str.replace('M', '').astype(float)
+
+# Create a bar plot
+fig = px.line(df4, 
+             x='yearID', 
+             y='average_salary_numeric', 
+             color='name',
+             title='Average Salary Team Comparison', 
+             labels={'average_salary_numeric': 'Average Salary (in Millions)', 'name': 'Team Name'},
+             text='average_salary')  # Display the formatted average salary on the bars
+
+# Update layout
+#fig.update_traces(texttemplate='%{text}', textposition='outside')
+#fig.update_layout(yaxis_tickprefix='$', yaxis_tickformat=',.2fM')
+fig.update_traces(text=None)
+fig.update_layout(
+    xaxis=dict(
+        showline=True,
+        showgrid=False,
+        showticklabels=True,
+        linecolor='rgb(204, 204, 204)',
+        linewidth=2,
+        ticks='outside',
+        tickfont=dict(
+            family='Arial',
+            size=12,
+            color='rgb(82, 82, 82)',
+        ),
+    ),
+     yaxis=dict(
+        showgrid=False,
+        zeroline=False,
+        showline=False,
+        showticklabels=True,
+    ),
+    autosize=True,
+    margin=dict(
+        autoexpand=True,
+        l=100,
+        r=20,
+        t=110,
+    ),
+    showlegend=True,
+    plot_bgcolor='white',
+
+    # title changes
+  title=dict(
+        font=dict(
+            size=26,  # font size 
+            color='black',  #  title color
+            family='Times New Arrow, sans-serif', 
+            weight='bold'  # Set font weight to bold
+        )
+    ),
+
+    
+)
+
+# Show the plot
+fig.show()
+
+
+
+```
+
+## Strech Questions
+
+Advanced Salary Distribution by Position (with Case Statement):
+
+Write an SQL query that provides a summary table showing the average salary for players in each position (e.g., pitcher, catcher, outfielder) across all years. Include the following columns:
+
+position
+average_salary
+total_players
+highest_salary
+The highest_salary column should display the highest salary ever earned by a player in that position. If no player in that position has a recorded salary, display “N/A” for the highest salary.
+
+Additionally, create a new column called salary_category using a case statement:
+
+If the average salary is above $1 million, categorize it as “High Salary.”
+If the average salary is between $500,000 and $1 million, categorize it as “Medium Salary.”
+Otherwise, categorize it as “Low Salary.”
+Order the table by average salary in descending order.
+
+Print the top 10 rows of this summary table.
+
+```{python}
+#| label: strech question 1
+#| code-summary: Question strech 1
+#| output: true
+
+df5 = pd.read_sql_query("""
+    SELECT
+        CASE 
+            WHEN startingPos = 1 THEN 'pitcher'
+            WHEN startingPos = 2 THEN 'catcher'
+            WHEN startingPos = 3 THEN 'midfielder'
+            WHEN startingPos = 4 THEN 'first base'
+            WHEN startingPos = 5 THEN 'second base'
+            ELSE 'None'
+        END AS position_name,
+        '$' || printf('%.2f', AVG(s.salary) / 1000000) || 'M' AS average_salary,
+        '$' || printf('%.2f', MAX(s.salary) / 1000000) || 'M' AS highest_salary,
+        COUNT(t.playerID) AS number_player, 
+        CASE 
+            WHEN AVG(s.salary) > 1000000 THEN 'High Salary'
+            WHEN AVG(s.salary) > 500000 AND AVG(s.salary) <= 1000000 THEN 'Medium Salary'
+            WHEN AVG(s.salary) <= 500000 THEN 'Low Salary'
+            ELSE NULL
+        END AS category
+    FROM allstarfull t
+    INNER JOIN salaries s ON s.teamID = t.teamID
+    GROUP BY position_name, t.teamID
+    HAVING position_name != 'None'
+    ORDER BY average_salary DESC
+    LIMIT 15;
+
+""", con)
+
+#markdown print
+print(df5.head(10).to_markdown())
+
+
+
+```

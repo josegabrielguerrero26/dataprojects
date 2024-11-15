@@ -2,18 +2,18 @@ project:
   type: website
 
 website:
-  title: "Your_Name - Data Science Portfolio"
+  title: "Portfolio Cases- Gabriel Guerrero"
   favicon: Images/favicon.png
   back-to-top-navigation: true
-  repo-url: https://github.com/username/username.github.io
-  #repo-actions: [issue] #if you want to allow others to report issues on your site uncomment this line
+  repo-url: https://github.com/byui-math-dept/guerrero-gabriel-24.git
+  repo-actions: [issue] #if you want to allow others to report issues on your site uncomment this line
 
   page-footer: 
     border: true
-    left: "Your_Name 2024©"
-    right: 
+    left: "Gabriel Guerrero 2024 ©"
+    right:    
       - icon: linkedin
-        href: Your_LinkedIn_URL
+        href: https://www.linkedin.com/in/guerrerogjp/
 
   navbar:
     background: primary
@@ -23,156 +23,152 @@ website:
         file: index.qmd
       - text: "My Resume"
         file: resume.qmd
-      - text: "Data Cleansing"
-        file: cleansing.qmd
-      - text: "Data Exploration"
-        file: exploration.qmd
-      - text: "Story Telling"
-        file: story_telling.qmd
-      - text: "Machine Learning"
-        file: ml.qmd
-      - text: "Full Stack"
-        file: full_stack.qmd
-      - text: "Competition"
-        file: competition.qmd
-  
-  # learn more about navication here https://quarto.org/docs/websites/website-navigation.html
-  # comment out any of the sections below to turn off the sidebar
+      - text: "DS250 Projects"
+        file: 250_projects.qmd
+      - text: "DS350 Projects"
+        file: 350_projects.qmd
+      - text: "DS450 Projects"
+        file: 450_projects.qmd
+      - text: "DS460 Projects"
+        file: 460_projects.qmd
 
-  sidebar: 
-    - title: "Data Cleansing"
+  sidebar:
+    - title: "DS 250 Projects"
       style: "docked"
       background: light
       contents:
-        - text: "Data Cleansing"
-          file: cleansing.qmd
+        - text: "DS250 Projects"
+          file: 250_projects.qmd
+        - text: "---"
+        - text: "Project 0"
+          file: 250_Projects/project0.qmd
         - text: "---"
         - text: "Project 1"
-          file: Cleansing_Projects/project1.qmd
+          file: 250_Projects/project1.qmd
         - text: "---"
         - text: "Project 2"
-          file: Cleansing_Projects/project2.qmd
+          file: 250_Projects/project2.qmd
         - text: "---"
         - text: "Project 3"
-          file: Cleansing_Projects/project3.qmd
+          file: 250_Projects/project3.qmd
         - text: "---"
         - text: "Project 4"
-          file: Cleansing_Projects/project4.qmd
+          file: 250_Projects/project4.qmd
         - text: "---"
         - text: "Project 5"
-          file: Cleansing_Projects/project5.qmd
+          file: 250_Projects/project5.qmd
         - text: "---"
-    - title: "Data Exploration"
+        - text: "Project 6"
+          file: 250_Projects/project6.qmd
+        - text: "---"
+
+    - title: "DS 350 Projects"
       style: "docked"
       background: light
       contents:
-        - text: "Data Exploration"
-          file: exploration.qmd
+        - text: "DS350 Projects"
+          file: 350_projects.qmd
         - text: "---"
-        - text: "Project 1"
-          file: Exploration_Projects/project1.qmd
+        - text: "Week 1"
+          file: 350_Projects/week_01.qmd
         - text: "---"
-        - text: "Project 2"
-          file: Exploration_Projects/project2.qmd
+        - text: "Week 2"
+          file: 350_Projects/week_02.qmd
         - text: "---"
-        - text: "Project 3"
-          file: Exploration_Projects/project3.qmd
+        - text: "Week 3"
+          file: 350_Projects/week_03.qmd
         - text: "---"
-        - text: "Project 4"
-          file: Exploration_Projects/project4.qmd
+        - text: "Week 4"
+          file: 350_Projects/week_04.qmd
         - text: "---"
-        - text: "Project 5"
-          file: Exploration_Projects/project5.qmd
+        - text: "Week 5"
+          file: 350_Projects/week_05.qmd
         - text: "---"
-    - title: "Story Telling"
+        - text: "Week 6"
+          file: 350_Projects/week_06.qmd
+        - text: "---"
+        - text: "Week 7"
+          file: 350_Projects/week_07.qmd
+        - text: "---"
+        - text: "Week 8"
+          file: 350_Projects/week_08.qmd
+        - text: "---"
+        - text: "Week 9"
+          file: 350_Projects/week_09.qmd
+        - text: "---"
+        - text: "Week 10"
+          file: 350_Projects/week_10.qmd
+        - text: "---"
+        - text: "Week 11"
+          file: 350_Projects/week_11.qmd
+        - text: "---"
+        - text: "Week 12"
+          file: 350_Projects/week_12.qmd
+        - text: "---"
+        - text: "Week 13"
+          file: 350_Projects/week_13.qmd
+
+    - title: "DS 450 Projects"
       style: "docked"
       background: light
       contents:
-        - text: "Story Telling"
-          file: story_telling.qmd
+        - text: "DS450 Projects"
+          file: 450_projects.qmd
+        - text: "---"
+        - text: "Project 0"
+          file: 450_Projects/project0.qmd
         - text: "---"
         - text: "Project 1"
-          file: Story_Telling/project1.qmd
+          file: 450_Projects/project1.qmd
         - text: "---"
         - text: "Project 2"
-          file: Story_Telling/project2.qmd
+          file: 450_Projects/project2.qmd
         - text: "---"
         - text: "Project 3"
-          file: Story_Telling/project3.qmd
+          file: 450_Projects/project3.qmd
         - text: "---"
         - text: "Project 4"
-          file: Story_Telling/project4.qmd
+          file: 450_Projects/project4.qmd
         - text: "---"
         - text: "Project 5"
-          file: Story_Telling/project5.qmd
+          file: 450_Projects/project5.qmd
         - text: "---"
-    - title: "Machine Learning"
+        - text: "Project 6"
+          file: 450_Projects/project6.qmd
+        - text: "---"
+
+    - title: "DS 460 Projects"
       style: "docked"
       background: light
       contents:
-        - text: "Machine Learning"
-          file: ml.qmd
+        - text: "DS450 Projects"
+          file: 460_projects.qmd
+        - text: "---"
+        - text: "Project 0"
+          file: 460_Projects/project0.qmd
         - text: "---"
         - text: "Project 1"
-          file: Machine_Learning/project1.qmd
+          file: 460_Projects/project1.qmd
         - text: "---"
         - text: "Project 2"
-          file: Machine_Learning/project2.qmd
+          file: 460_Projects/project2.qmd
         - text: "---"
         - text: "Project 3"
-          file: Machine_Learning/project3.qmd
+          file: 460_Projects/project3.qmd
         - text: "---"
         - text: "Project 4"
-          file: Machine_Learning/project4.qmd
+          file: 460_Projects/project4.qmd
         - text: "---"
         - text: "Project 5"
-          file: Machine_Learning/project5.qmd
+          file: 460_Projects/project5.qmd
         - text: "---"
-    - title: "Full Stack"
-      style: "docked"
-      background: light
-      contents:
-        - text: "Full Stack"
-          file: full_stack.qmd
+        - text: "Project 6"
+          file: 460_Projects/project6.qmd
         - text: "---"
-        - text: "Project 1"
-          file: Full_Stack/project1.qmd
-        - text: "---"
-        - text: "Project 2"
-          file: Full_Stack/project2.qmd
-        - text: "---"
-        - text: "Project 3"
-          file: Full_Stack/project3.qmd
-        - text: "---"
-        - text: "Project 4"
-          file: Full_Stack/project4.qmd
-        - text: "---"
-        - text: "Project 5"
-          file: Full_Stack/project5.qmd
-        - text: "---"
-    - title: "Competition"
-      style: "docked"
-      background: light
-      contents:
-        - text: "Competition"
-          file: competition.qmd
-        - text: "---"
-        - text: "Project 1"
-          file: Competition/project1.qmd
-        - text: "---"
-        - text: "Project 2"
-          file: Competition/project2.qmd
-        - text: "---"
-        - text: "Project 3"
-          file: Competition/project3.qmd
-        - text: "---"
-        - text: "Project 4"
-          file: Competition/project4.qmd
-        - text: "---"
-        - text: "Project 5"
-          file: Competition/project5.qmd
-        - text: "---"
-  
+
+        #continue the pattern if you need more links
+        #copy paste from title and keep it indented to sidebar to add additonal sidebar navigation for other pages
+
 format:  
   html:
     theme: #see this link to customize the theme with css (https://quarto.org/docs/output-formats/html-themes.html#dark-mode)
