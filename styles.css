@@ -1,1 +1,4 @@
-/* css styles */
+body {
+    line-height: 2; /* Double line spacing */
+    text-align: justify; /* Justify text */
+}
