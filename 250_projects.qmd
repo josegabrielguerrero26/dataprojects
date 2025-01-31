@@ -12,3 +12,4 @@ subtitle: "Repo for all my Projects"
 - [Project 4](/250_Projects/project3.qmd)
 - [Project 5](/250_Projects/project4.qmd)
 - [Project 6](/250_Projects/project5.qmd)
+- [Project 7](/250_Projects/project6.qmd)
