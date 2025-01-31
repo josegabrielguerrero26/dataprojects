@@ -4942,7 +4942,7 @@ text-align: justify;
 </details>
 <div id="libraries" class="cell-output cell-output-display">
 
-            <div id="c3BWCR"></div>
+            <div id="xrydhL"></div>
             <script type="text/javascript" data-lets-plot-script="library">
                 if(!window.letsPlotCallQueue) {
                     window.letsPlotCallQueue = [];
@@ -4966,9 +4966,9 @@ text-align: justify;
                         var div = document.createElement("div");
                         div.style.color = 'darkred';
                         div.textContent = 'Error loading Lets-Plot JS';
-                        document.getElementById("c3BWCR").appendChild(div);
+                        document.getElementById("xrydhL").appendChild(div);
                     };
-                    var e = document.getElementById("c3BWCR");
+                    var e = document.getElementById("xrydhL");
                     e.appendChild(script);
                 })()
             </script>
@@ -5281,7 +5281,7 @@ text-align: justify;
 <h3 class="anchored" data-anchor-id="question-2">Question 2:</h3>
 <p><strong>Which airport has the worst delays? Describe the metric you chose, and why you chose it to determine the “worst” airport. Your answer should include a summary table that lists (for each airport) the total number of flights, total number of delayed flights, proportion of delayed flights, and average delay time in hours.</strong></p>
 <p>The airport with the worst delays is San Francisco International Airport according to the metric of the proportion of delayed flights. However, adding the time of delay to the metric of the proportion of delayed flights, the airport with the worst delays is Chicago and Atlanta.</p>
-<div id="2e8928e2" class="cell" data-labe="Question 2" data-execution_count="8">
+<div id="bfae369e" class="cell" data-labe="Question 2" data-execution_count="8">
 <details class="code-fold">
 <summary>Question 2</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># df columns and types</span></span>
@@ -5338,7 +5338,7 @@ text-align: justify;
 <h2 class="anchored" data-anchor-id="question-3">Question 3:</h2>
 <p><strong>What is the best month to fly if you want to avoid delays of any length? Describe the metric you chose and why you chose it to calculate your answer. Include one chart to help support your answer, with the x-axis ordered by month. (To answer this question, you will need to remove any rows that are missing the Month variable.)</strong></p>
 <p>The best month to fly if you want to avoid delays of any length is November following by September. The metric I chose to calculate my answer is the sum of minutes delayed.</p>
-<div id="910eff61" class="cell" data-labe="Question 3" data-execution_count="9">
+<div id="6b5f4323" class="cell" data-labe="Question 3" data-execution_count="9">
 <details class="code-fold">
 <summary>Question 3</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df3 <span class="op">=</span> df_clean[[<span class="st">&#39;month&#39;</span>, <span class="st">&#39;airport_code&#39;</span>, <span class="st">&#39;year&#39;</span>, <span class="st">&#39;minutes_delayed_total&#39;</span>]]</span>
@@ -5370,13 +5370,13 @@ text-align: justify;
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="9">
-   <div id="sSP2yW"></div>
+   <div id="7MY95F"></div>
    <script type="text/javascript" data-lets-plot-script="plot">
    
    (function() {
    // ----------
    
-   var containerDiv = document.getElementById("sSP2yW");
+   var containerDiv = document.getElementById("7MY95F");
    var observer = new ResizeObserver(function(entries) {
        for (let entry of entries) {
            var width = containerDiv.clientWidth
@@ -5507,7 +5507,7 @@ text-align: justify;
 <li>30% of all delayed flights in the Late-Arriving category are due to weather</li>
 <li>From April to August, 40% of delayed flights in the NAS category are due to weather. The rest of the months, the proportion rises to 65%.</li>
 </ul>
-<div id="643d0058" class="cell" data-labe="Question 4" data-execution_count="10">
+<div id="07ded97f" class="cell" data-labe="Question 4" data-execution_count="10">
 <details class="code-fold">
 <summary>cleaning and formulas</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select columns</span></span>
@@ -5536,7 +5536,7 @@ text-align: justify;
 <span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>df4.head(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="1292cdc9" class="cell" data-labe="Question 4" data-execution_count="11">
+<div id="891e1ae0" class="cell" data-labe="Question 4" data-execution_count="11">
 <details class="code-fold">
 <summary>where and calculation</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to calculate NAS weather delays based on the month</span></span>
@@ -5561,7 +5561,7 @@ text-align: justify;
 <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co">#df4.head(50)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="20960eee" class="cell" data-labe="Question 4" data-execution_count="12">
+<div id="224fcc3a" class="cell" data-labe="Question 4" data-execution_count="12">
 <details class="code-fold">
 <summary>final output</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df5<span class="op">=</span>df4.dropna()</span>
@@ -5583,7 +5583,7 @@ text-align: justify;
 <h2 class="anchored" data-anchor-id="question-5">Question 5:</h2>
 <p><strong>Using the new weather variable calculated above, create a barplot showing the proportion of all flights that are delayed by weather at each airport. Describe what you learn from this graph.</strong></p>
 <p>Chicago International Airport (ORD) has the highest proportion of flights delayed by weather, followed by Atlanta (ATL) and San Francisco International(SFO) and Denver (DEN).</p>
-<div id="9d5dc23b" class="cell" data-execution_count="13">
+<div id="b20b7b26" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregation</span></span>
@@ -5592,7 +5592,7 @@ text-align: justify;
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>).reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="55eb1307" class="cell" data-labe="Question 5" data-execution_count="14">
+<div id="a36b6601" class="cell" data-labe="Question 5" data-execution_count="14">
 <details class="code-fold">
 <summary>final output 5</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># higlight airport</span></span>
@@ -5624,13 +5624,13 @@ text-align: justify;
 <span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="14">
-   <div id="IQVh8u"></div>
+   <div id="w7isW2"></div>
    <script type="text/javascript" data-lets-plot-script="plot">
    
    (function() {
    // ----------
    
-   var containerDiv = document.getElementById("IQVh8u");
+   var containerDiv = document.getElementById("w7isW2");
    var observer = new ResizeObserver(function(entries) {
        for (let entry of entries) {
            var width = containerDiv.clientWidth

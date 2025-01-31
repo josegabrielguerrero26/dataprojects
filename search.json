@@ -98,385 +98,6 @@
     ]
   },
   {
-    "objectID": "250_Projects/project2.html",
-    "href": "250_Projects/project2.html",
-    "title": "Late Flights & Missing Data (JSON)",
-    "section": "",
-    "text": "Delayed flights are not something most people look forward to. In the best case scenario you may only wait a few extra minutes for the plane to be cleaned. However, those few minutes can stretch into hours if a mechanical issue is discovered or a storm develops. Arriving hours late may result in you missing a connecting flight, job interview, or your best friend’s wedding.\nIn 2003 the Bureau of Transportation Statistics (BTS) began collecting data on the causes of delayed flights. The categories they use are Air Carrier, National Aviation System, Weather, Late-Arriving Aircraft, and Security. You can visit the BTS website to read definitions of these categories.",
-    "crumbs": [
-      "Projects",
-      "Project 3"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project2.html#client-request",
-    "href": "250_Projects/project2.html#client-request",
-    "title": "Late Flights & Missing Data (JSON)",
-    "section": "Client Request",
-    "text": "Client Request\nThe JSON file for this project contains information on delays at 7 airports over 10 years. Your task is to clean the data, search for insights about flight delays, and communicate your results to the Client. The Client is a CEO of a flight booking app who is interested in the causes of flight delays and wants to know which airports have the worst delays. They also want to know the best month to fly if you want to avoid delays of any length.",
-    "crumbs": [
-      "Projects",
-      "Project 3"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project2.html#elevator-pitch",
-    "href": "250_Projects/project2.html#elevator-pitch",
-    "title": "Late Flights & Missing Data (JSON)",
-    "section": "Elevator pitch",
-    "text": "Elevator pitch\nIn this project, you will be working with a dataset that contains information about flight delays. The key value metrics are the number of flights, the number of delays, and the percentage of delays from 7 airports over a 10-year period.\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nfrom lets_plot import *\nLetsPlot.setup_html()\nfrom datetime import datetime\nimport calendar\n\n\n\n            \n            \n            \n\n\n\n\nLoad the data\n# data in local file\n#df = pd.read_json(r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\flights_missing.json\")\n\n\n\ndf = pd.read_json(\"https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json\")\n\n\n#local\n#r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\names_year.csv\"\n\n#online\n#https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json\n\n\n\n\nElevator pitch\nThis project aims to dela with missing data and how to handle it.\n\n\nQuestion 1:\nFix all of the varied missing data types in the data to be consistent (all missing values should be displayed as “NaN”). In your report include one record example (one row) from your new data, in the raw JSON format. Your example should display the “NaN” for at least one missing value.\nThe following record has a missing value in the “airline” column.\n::: {#cell-Record with missing value .cell execution_count=4}\n\nRecord with missing value\ndf.head(3)\n\n\n\n\n\n\n\n\n\nairport_code\nairport_name\nmonth\nyear\nnum_of_flights_total\nnum_of_delays_carrier\nnum_of_delays_late_aircraft\nnum_of_delays_nas\nnum_of_delays_security\nnum_of_delays_weather\nnum_of_delays_total\nminutes_delayed_carrier\nminutes_delayed_late_aircraft\nminutes_delayed_nas\nminutes_delayed_security\nminutes_delayed_weather\nminutes_delayed_total\n\n\n\n\n0\nATL\nAtlanta, GA: Hartsfield-Jackson Atlanta Intern...\nJanuary\n2005.0\n35048\n1500+\n-999\n4598\n10\n448\n8355\n116423.0\n104415\n207467.0\n297\n36931\n465533\n\n\n1\nDEN\nDenver, CO: Denver International\nJanuary\n2005.0\n12687\n1041\n928\n935\n11\n233\n3153\n53537.0\n70301\n36817.0\n363\n21779\n182797\n\n\n2\nIAD\n\nJanuary\n2005.0\n12381\n414\n1058\n895\n4\n61\n2430\nNaN\n70919\n35660.0\n208\n4497\n134881\n\n\n\n\n\n\n:::\n\n\nfuction for checking for missing data\ndf.head(2)\ndef check_for_na_null_empty(df):\n    #count na and null\n    nan_counts = df.isna().sum()\n\n\n    # Calculate empty string counts\n    empty_counts = df.applymap(lambda x: True if isinstance(x, str) and x == '' else False).sum()\n\n    # Combine results into a DataFrame\n    results = pd.DataFrame({\n        'NaN/Null': nan_counts,\n        '# String': empty_counts,\n  \n    })\n\n    return results\n\ncheck_for_na_null_empty(df)\n\n\n\n\nFix misssing data\ndf_clean=df.replace(r'^\\s*$', np.nan, regex=True)\ndf_clean = df_clean.fillna(\"NA\")\ncheck_for_na_null_empty(df_clean)\n\n\nThis is the same record as before, but now the missing value is displayed as “NA”.\n::: {#cell-Example NA .cell execution_count=7}\n\nExample NA\n# Show all rows where there is 'NA' in any column\ndf1=df_clean[df_clean.isin(['NA']).any(axis=1)]\n\ndf1.head(5)\n\n\n\n\n\n\n\n\n\nairport_code\nairport_name\nmonth\nyear\nnum_of_flights_total\nnum_of_delays_carrier\nnum_of_delays_late_aircraft\nnum_of_delays_nas\nnum_of_delays_security\nnum_of_delays_weather\nnum_of_delays_total\nminutes_delayed_carrier\nminutes_delayed_late_aircraft\nminutes_delayed_nas\nminutes_delayed_security\nminutes_delayed_weather\nminutes_delayed_total\n\n\n\n\n2\nIAD\nNA\nJanuary\n2005.0\n12381\n414\n1058\n895\n4\n61\n2430\nNA\n70919\n35660.0\n208\n4497\n134881\n\n\n9\nIAD\nWashington, DC: Washington Dulles International\nFebuary\n2005.0\n10042\n284\n631\n691\n4\n28\n1639\n15573.0\n39840\nNA\n169\n1359\n78878\n\n\n12\nSFO\nSan Francisco, CA: San Francisco International\nFebuary\n2005.0\n9327\n599\n457\n1010\n0\n57\n2122\n30760.0\n27302\nNA\n6\n3178\n110995\n\n\n13\nSLC\nNA\nFebuary\n2005.0\n12404\n645\n463\n752\n10\n79\n1947\n32336.0\n23087\n24544.0\n293\n4614\n84874\n\n\n14\nATL\nAtlanta, GA: Hartsfield-Jackson Atlanta Intern...\nMarch\n2005.0\n37806\n1462\n-999\n5697\n11\n423\n9431\nNA\n150766\n396191.0\n568\n33379\n691887\n\n\n\n\n\n\n:::\n\n\nQuestion 2:\nWhich airport has the worst delays? Describe the metric you chose, and why you chose it to determine the “worst” airport. Your answer should include a summary table that lists (for each airport) the total number of flights, total number of delayed flights, proportion of delayed flights, and average delay time in hours.\nThe airport with the worst delays is San Francisco International Airport according to the metric of the proportion of delayed flights. However, adding the time of delay to the metric of the proportion of delayed flights, the airport with the worst delays is Chicago and Atlanta.\n\n\nQuestion 2\n# df columns and types\ndf_clean.dtypes\n\n# create a new column to count the incidences\ndf_clean['incidences_count'] = 1  \n\n#group by 'airport_name', sum the 'incidences_count', and sum 'minutes_delayed_total'\nresult = df_clean.groupby('airport_name').agg(\n    count_incidences=('incidences_count', 'sum'), \n    num_of_flight_total=('num_of_flights_total', 'sum'),\n    num_of_delays_total=('num_of_delays_total', 'sum'),  \n    sum_min_delayed=('minutes_delayed_total', 'sum'),   \n\n)\n\n# Calculate percentage \nresult['percenta_delayed'] = (result['num_of_delays_total'] / result['num_of_flight_total']) * 100\n\n#calculate the average delay time in hours\nresult['avg_delay_hours'] = result['sum_min_delayed'] / 60\n\n# formatting percentage calculates\nresult['percenta_delayed'] = result['percenta_delayed'].apply(lambda x: f\"{x:.2f}%\")\n\n# Sort by 'sum_min_delayed' or another relevant column\n#sorting by 'sum_delayed\nresult_sorted = result.sort_values(by='percenta_delayed', ascending=False)\n\n# Formating the number\nresult_sorted['sum_min_delayed'] = result_sorted['sum_min_delayed'].apply(lambda x: f\"{x:,.0f}\")\nresult_sorted['avg_delay_hours'] = result_sorted['avg_delay_hours'].apply(lambda x: f\"{x:,.0f}\")\n\n# print markdown\nprint(result_sorted.to_markdown())\n\n\n| airport_name                                          |   count_incidences |   num_of_flight_total |   num_of_delays_total | sum_min_delayed   | percenta_delayed   | avg_delay_hours   |\n|:------------------------------------------------------|-------------------:|----------------------:|----------------------:|:------------------|:-------------------|:------------------|\n| San Francisco, CA: San Francisco International        |                127 |               1565257 |                408631 | 25,488,636        | 26.11%             | 424,811           |\n| Chicago, IL: Chicago O'Hare International             |                125 |               3400032 |                773122 | 52,165,135        | 22.74%             | 869,419           |\n| Atlanta, GA: Hartsfield-Jackson Atlanta International |                126 |               4235114 |                870910 | 52,114,971        | 20.56%             | 868,583           |\n| Washington, DC: Washington Dulles International       |                121 |                773480 |                152630 | 9,322,510         | 19.73%             | 155,375           |\n| NA                                                    |                 56 |                884879 |                172413 | 10,611,978        | 19.48%             | 176,866           |\n| San Diego, CA: San Diego International                |                125 |                870161 |                167747 | 7,922,432         | 19.28%             | 132,041           |\n| Denver, CO: Denver International                      |                122 |               2323376 |                439964 | 23,660,463        | 18.94%             | 394,341           |\n| Salt Lake City, UT: Salt Lake City International      |                122 |               1293072 |                190733 | 9,460,901         | 14.75%             | 157,682           |",
-    "crumbs": [
-      "Projects",
-      "Project 3"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project2.html#question-3",
-    "href": "250_Projects/project2.html#question-3",
-    "title": "Late Flights & Missing Data (JSON)",
-    "section": "Question 3:",
-    "text": "Question 3:\nWhat is the best month to fly if you want to avoid delays of any length? Describe the metric you chose and why you chose it to calculate your answer. Include one chart to help support your answer, with the x-axis ordered by month. (To answer this question, you will need to remove any rows that are missing the Month variable.)\nThe best month to fly if you want to avoid delays of any length is November following by September. The metric I chose to calculate my answer is the sum of minutes delayed.\n\n\nQuestion 3\ndf3 = df_clean[['month', 'airport_code', 'year', 'minutes_delayed_total']]\n\n# Step 2: Remove rows month \ndf3 = df3.dropna(subset=['month'])  \ndf3 = df3[df3['month'] != 'n/a']  # Remove 'n/a' as a string\n\n# Aggregation\ndf3 = df3.groupby('month').agg(\n    sum_min_delayed=('minutes_delayed_total', 'sum')\n).reset_index()  # Reset the index to keep 'month' as a column\n\ndf3['month'] = pd.Categorical(df3['month'], categories=list(calendar.month_name)[1:], ordered=True)\n\n# ggplot graph \n(\n    ggplot(df3, aes(x='month', y='sum_min_delayed')) +\n    geom_line(color='black') +\n    geom_point(color='#103d85') +\n    labs(title='Delays Flights',\n         subtitle='Consolidated from January to December', \n         x='Months', \n         y='Total Minutes Delayed') +\n    theme_minimal2()+  # Base theme\n    theme(plot_title=element_text(color='black', size=22, face='bold'),\n          plot_subtitle=element_text(color='Blue', size=14, face='italic'))\n\n)\n\n\n   \n   \nSource: flights_missing JSON",
-    "crumbs": [
-      "Projects",
-      "Project 3"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project2.html#questión-4",
-    "href": "250_Projects/project2.html#questión-4",
-    "title": "Late Flights & Missing Data (JSON)",
-    "section": "Questión 4:",
-    "text": "Questión 4:\nAccording to the BTS website, the “Weather” category only accounts for severe weather delays. Mild weather delays are not counted in the “Weather” category, but are actually included in both the “NAS” and “Late-Arriving Aircraft” categories. Your job is to create a new column that calculates the total number of flights delayed by weather (both severe and mild). You will need to replace all the missing values in the Late Aircraft variable with the mean. Show your work by printing the first 5 rows of data in a table. Use these three rules for your calculations\n\n100% of delayed flights in the Weather category are due to weather\n30% of all delayed flights in the Late-Arriving category are due to weather\nFrom April to August, 40% of delayed flights in the NAS category are due to weather. The rest of the months, the proportion rises to 65%.\n\n\n\ncleaning and formulas\n# Select columns\ndf4 = df[['month', 'airport_code', 'year', 'num_of_delays_weather', 'num_of_delays_late_aircraft', 'num_of_delays_nas']]\n\ndf4['month'].dropna(inplace=True)\n\n#mapping months\nmonth_mapping = {\n    'January': 1,\n    'February': 2,\n    'March': 3,\n    'April': 4,\n    'May': 5,\n    'June': 6,\n    'July': 7,\n    'August': 8,\n    'September': 9,\n    'October': 10,\n    'November': 11,\n    'December': 12\n}\n\n# Replace month names with their corresponding numbers\ndf4['month'] = df4['month'].map(month_mapping)\ndf4.head(5)\n\n\n\n\nwhere and calculation\n# Function to calculate NAS weather delays based on the month\ndef calculate_nas_weather_delays(row):\n    if 4 &lt;= row['month'] &lt;= 8:  # Between April and August \n        return 0.40 * row['num_of_delays_nas']\n    else:  # Other months\n        return 0.65 * row['num_of_delays_nas']\n\n# Apply using np where num_of_delays_late_aircraft is NaN\ndf4['total_weather_delays'] = np.where(\n    df4['num_of_delays_late_aircraft'].isna(),\n    \n    # Only for rows where 'num_of_delays_late_aircraft' is NaN\n    df4['num_of_delays_weather'] + 0.30 * df4['num_of_delays_late_aircraft'].fillna(0) + df4.apply(calculate_nas_weather_delays, axis=1),\n    \n    # For other rows, calculate normally\n    df4['num_of_delays_weather'] + df4['num_of_delays_late_aircraft'] + df4['num_of_delays_nas']\n)\n\n# Display the first 5 rows of the updated data\n#df4.head(50)\n\n\n\n\nfinal output\ndf5=df4.dropna()\ndf5.describe()\nprint(df5.head(5).to_markdown())\n\n\n|    |   month | airport_code   |   year |   num_of_delays_weather |   num_of_delays_late_aircraft |   num_of_delays_nas |   total_weather_delays |\n|---:|--------:|:---------------|-------:|------------------------:|------------------------------:|--------------------:|-----------------------:|\n|  0 |       1 | ATL            |   2005 |                     448 |                          -999 |                4598 |                   4047 |\n|  1 |       1 | DEN            |   2005 |                     233 |                           928 |                 935 |                   2096 |\n|  2 |       1 | IAD            |   2005 |                      61 |                          1058 |                 895 |                   2014 |\n|  3 |       1 | ORD            |   2005 |                     306 |                          2255 |                5415 |                   7976 |\n|  4 |       1 | SAN            |   2005 |                      56 |                           680 |                 638 |                   1374 |",
-    "crumbs": [
-      "Projects",
-      "Project 3"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project2.html#question-5",
-    "href": "250_Projects/project2.html#question-5",
-    "title": "Late Flights & Missing Data (JSON)",
-    "section": "Question 5:",
-    "text": "Question 5:\nUsing the new weather variable calculated above, create a barplot showing the proportion of all flights that are delayed by weather at each airport. Describe what you learn from this graph.\nChicago International Airport (ORD) has the highest proportion of flights delayed by weather, followed by Atlanta (ATL) and San Francisco International(SFO) and Denver (DEN).\n\n\nShow the code\n# Aggregation\ndf5_group = df5.groupby('airport_code').agg(\n    sum_min_delayed=('total_weather_delays', 'sum')\n).reset_index()\n\n\n\n\nfinal output 5\n# higlight airport\nhighlight_airports = ['ORD', 'ATL', 'SFO','DEN'] \ndf5_group['highlight'] = df5_group['airport_code'].apply(lambda x: x if x in highlight_airports else 'Other')\n\n\n# Sorting based on sum_min_delayed in descending order\ndf5_group = df5_group.sort_values(by='sum_min_delayed', ascending=False)\n\n# ggplot graph \n(\n    ggplot(df5_group, aes(x='airport_code', y='sum_min_delayed', fill='highlight')) +  \n    geom_bar(stat='identity', color='black') + \n    scale_fill_manual(values={  # Custom color mapping\n        'SFO': 'red', \n        'DEN': 'red',  \n        'ATL': 'green',  \n        'ORD': 'blue',  \n        'Other': 'gray'  # Gray color for all other airports\n    }) + \n    labs(title='Delayed Flights by Airport',\n         subtitle='Highlighting Worst Airports', \n         x='Airport Code',\n         y='Total Minutes Delayed') +\n    theme_minimal() +  # Base theme\n    theme(plot_title=element_text(color='black', size=22, face='bold'),\n          plot_subtitle=element_text(color='blue', size=14, face='italic'))\n)",
-    "crumbs": [
-      "Projects",
-      "Project 3"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project0.html",
-    "href": "250_Projects/project0.html",
-    "title": "Client Report - Introduction",
-    "section": "",
-    "text": "Introduction\nObjective: Preparation, and first example\nSet upand questions are included in this project .\n\n\nLibraries\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nfrom lets_plot import *\nLetsPlot.setup_html()\n\n\n\n            \n            \n            \n\n\n\n\nElevator pitch\nThis project aims to explore the different tools for future projects and also the use of markdown and Quarto for reports and documents. It will also use and explore the Python libraries pandas, numpy, and plotly.\n\n\nQuestion 1:\nFinish the Course Setup, and post any questions to getting your environment working smoothly in your course Slack channel\nI finished the Course Setup and I posted a question on Slack.\n\n\nQuestion 2\nRecreate the example chart from PY4DS: CH2 Data Visualization of the textbook\n\n\nLoad the data\n# Include and execute your code here\nfrom palmerpenguins import load_penguins\ndf = penguins = load_penguins()\n\n\n\n\nPlot 1\n(\n    ggplot(data=penguins, mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\"))\n    + geom_point(mapping=aes(color=\"species\", shape=\"species\"))\n    + geom_smooth(method=\"lm\")\n    + labs(\n        title=\"Body mass and flipper length\",\n        subtitle=\"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n        x=\"Flipper length (mm)\",\n        y=\"Body mass (g)\",\n        color=\"Species\",\n        shape=\"Species\",\n    )+\n    theme(plot_title=element_text(color='black', size=18, face='bold'))\n\n)\n\n\n   \n   \nPenguins\n\n\n\n\nQuestion 3\nInclude the table created from PY4DS: CH2 Data Visualization used to create the above chart\nThis is the table created from PY4DS.\n\n\n|    | species   | island    |   bill_length_mm |   bill_depth_mm |   flipper_length_mm |   body_mass_g | sex    |   year |\n|---:|:----------|:----------|-----------------:|----------------:|--------------------:|--------------:|:-------|-------:|\n|  0 | Adelie    | Torgersen |             39.1 |            18.7 |                 181 |          3750 | male   |   2007 |\n|  1 | Adelie    | Torgersen |             39.5 |            17.4 |                 186 |          3800 | female |   2007 |\n|  2 | Adelie    | Torgersen |             40.3 |            18   |                 195 |          3250 | female |   2007 |\n|  3 | Adelie    | Torgersen |            nan   |           nan   |                 nan |           nan | nan    |   2007 |\n|  4 | Adelie    | Torgersen |             36.7 |            19.3 |                 193 |          3450 | female |   2007 |\n|  5 | Adelie    | Torgersen |             39.3 |            20.6 |                 190 |          3650 | male   |   2007 |\n|  6 | Adelie    | Torgersen |             38.9 |            17.8 |                 181 |          3625 | female |   2007 |\n|  7 | Adelie    | Torgersen |             39.2 |            19.6 |                 195 |          4675 | male   |   2007 |\n|  8 | Adelie    | Torgersen |             34.1 |            18.1 |                 193 |          3475 | nan    |   2007 |\n|  9 | Adelie    | Torgersen |             42   |            20.2 |                 190 |          4250 | nan    |   2007 |\n\n\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Projects",
-      "Project 1"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project1.html",
-    "href": "250_Projects/project1.html",
-    "title": "Client Report - What is in a Name?",
-    "section": "",
-    "text": "Background\nEarly in prehistory, some descriptive names began to be used again and again until they formed a name pool for a particular culture. Parents would choose names from the pool of existing names rather than invent new ones for their children.\nWith the rise of Christianity, certain trends in naming practices manifested. Christians were encouraged to name their children after saints and martyrs of the church. These early Christian names can be found in many cultures today, in various forms. These were spread by early missionaries throughout the Mediterranean basin and Europe.\nBy the Middle Ages, the Christian influence on naming practices was pervasive. Each culture had its pool of names, which were a combination of native names and early Christian names that had been in the language long enough to be considered native.\n\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nfrom lets_plot import *\nLetsPlot.setup_html()\nfrom datetime import datetime\n\n\n\n            \n            \n            \n\n\n\n\nLoad the data\n# data in local file\n#df = pd.read_csv(r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\names_year.csv\")\n\n\n\ndf = pd.read_csv('https://raw.githubusercontent.com/byuidatascience/data4names/refs/heads/master/data-raw/names_year/names_year.csv')\n\n#local\n#r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\names_year.csv\"\n\n#online\n#https://raw.githubusercontent.com/byuidatascience/data4names/refs/heads/master/data-raw/names_year/names_year.csv'\n\n\n\n\nTiding 1\n# check for missing and na values\n\ndf.isna()\ndf.isnull()\ndf.dropna(inplace=True)\n\n\n\n\nTide data 2\n# group df by name and summarize\n\ndf_grouped = df.groupby(['name', 'year']).agg(total=('Total', 'sum')).reset_index()\n#df_grouped.head(10)\n\n\n\n\nElevator pitch\nThis project aims to explore understand the use of a name over time. The use of group funtion and sum will be used to show the use of a name over time.\n\n\nRequirements\nFor Project 1 the answer to each question should include a chart and a written response. The years labels on your charts should not include a comma. At least two of your charts must include reference marks.\n\n\nQuestion 1:\nHow does your name at your birth year compare to its use historically?\nThis following graph show that my name has increased its used over the years from less than a 1000 to more than 10000 in 40 years.\n\n\nPlot 1\ndf_grouped1= df_grouped[df_grouped['name'] == 'Gabriel']\nimport numpy as np\ntrend_text='Incresing accerelating \\n after 1980'\n\n(\n  ggplot(df_grouped1, aes(x='year', y='total', color='name')) +\n    geom_line(color='blue') + \n    geom_point(color='blue') +\n    labs(title='Names from 1900 to 2022',\n         subtitle='Use of Gabriel is increasing', \n         x='Year', \n         y='Total Numbers') +\n    theme_bw() +  # Base theme\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1900, 2030, 20).astype(int),  \n                       limits=(1900, 2020)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df_grouped1['total'].max()) + 1, 2000), \n                       limits=(0, int(df_grouped1['total'].max()))) +  # Set start and end for y-axis\n    # Title and subtitle styling\n    theme(plot_title=element_text(color='black', size=18, face='bold'),\n          plot_subtitle=element_text(color='Blue', size=14, face='italic'))+ # Subtitle styling+\n    geom_label(x=1980, y=6000, label=trend_text, color=\"black\", size='6', fill='#D3D3D3')\n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\nQuestion 2:\nIf you talked to someone named Brittany on the phone, what is your guess of his or her age? What ages would you not guess?\nBased on the graph, I would guess that I will be taking to a person betweeen 20 and 30 years old. I would not guess that I will be talking to a person over 40 years old and lest than 10 years old.\n\n\nPlot 2\ntoday = datetime.now()  # Get the current date and time\ntrend_text = \"Concentration of Brittany  \\n between 80 and 90\"\n\n# Calculate the actual year difference\n\ndf['actual_year'] = today.year - df['year']\ndf2 = df[df['name']=='Brittany']  \n\n'''\ndf_grouped2 = df2.groupby(['name', 'year']).agg(\n    Total=('Total', 'sum'),\n    Age=('actual_year', 'mean')\n).reset_index()\n'''\n#keeping name, year\ndf2 = df2[['name', 'year', 'Total', 'actual_year']]\n(\n  ggplot(df2, aes(x='year', y='actual_year', size='Total')) +\n    geom_line(color='black') + \n    geom_point(color='#103d85') +\n    labs(title='Use of the name Brittany from 1960 to 2010',\n         subtitle='80 and 90 has more density', \n         x='Year', \n         y='Total Numbers') +\n    theme_bw() +  # Base theme\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1960, 2018, 10).astype(int),  \n                       limits=(1960, 2020)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df2['actual_year'].max()) + 1, 10), \n                       limits=(0, int(df2['actual_year'].max()))) +  # Set start and end for y-axis\n    # Title and subtitle styling\n    theme(plot_title=element_text(color='black', size=18, face='bold'),\n          plot_subtitle=element_text(color='#4287f5', size=14, face='italic')\n          )  # Subtitle styling\n    # Adding a label \n    +geom_label(x=2005, y=40, label=trend_text, color=\"black\", size='6', fill='#D3D3D3')\n    #geom_text(data=last_points, aes(x='year', y='total', label=name))\n  \n\n\n\n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\nQuestion 3:\nMary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?\nThe trend indicates that the use of names of Mary and Paul have declined over the years more than Martha and Peter.\n\n\nPlot 3\ndf_grouped3 = df_grouped[df_grouped['name'].isin(['Mary', 'Martha', 'Peter', 'Paul'])]\n\n#Checking the unique names\n# df_grouped3['name'].unique()\n\n# Define your label text\ntrend_text = \"Significant decline \\nafter 2,000\"\nlast_points = df_grouped3.groupby('name').last().reset_index()\n\n(\n    ggplot(df_grouped3, aes(x='year', y='total', color='name')) +  # Color by 'name'\n    geom_line() +\n    geom_line(aes(size=(df_grouped3['name'].map({'Mary': 2, 'Martha': 1, 'Peter': 1, 'Paul': 2})))) +\n    labs(title='Selected Names Analysis',\n         subtitle='Mary, Martha, Peter, Paul through the years', \n         x='Year', \n         y='Total Numbers') +\n      # Base theme\n    theme_bw() +\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1970, 2020, 10).astype(int),  \n                       limits=(1970, 2015)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df_grouped3['total'].max()) + 1, 5000), \n                       limits=(0, 20000)) +  # Set start and end for y-axis\n    # Title and subtitle styling\n   theme(\n        plot_title=element_text(color='black', size=20, face='bold'),\n        plot_subtitle=element_text(color='#4287f5', size=16, face='regular'),\n        #legend_position=\"none\"  # Remove legends,\n    ) +\n    # Adding a label \n    geom_label(x=2005, y=8000, label=trend_text, color=\"black\", size='6',  fill='#D3D3D3')  \n  \n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\nQuestion 4:\nThink of a unique name from a famous movie. Plot the usage of that name and see how changes line up with the movie release. Does it look like the movie had an effect on usage?\nI picked the name Olivia for actress of the movie “Grease”. The movie was released in 1978. The usage of the name Olivia increased after the movie was released aroudn 1990.\n\n\nPlot 4\ndf_grouped4 = df_grouped[df_grouped['name'].isin(['Olivia'])]\n\n(\n    ggplot(df_grouped4, aes(x='year', y='total', color='name')) +  # Color by 'name'\n    geom_line()+\n     labs(title='Unique name from a famous movie Analysis',\n         subtitle='Movie Grease released in 1990', \n         x='Year', \n         y='Total Numbers') +\n      # Base theme\n    theme_classic() +\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1970, 2020, 10).astype(int),  \n                       limits=(1970, 2015)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df_grouped3['total'].max()) + 1, 5000), \n                       limits=(0, 20000)) +  # Set start and end for y-axis\n    # Title and subtitle styling\n   theme(\n        plot_title=element_text(color='black', size=20, face='bold'),\n        plot_subtitle=element_text(color='#4287f5', size=16, face='regular'),\n        #legend_position=\"none\"  # Remove legends,\n    ) +\n    # Adding a label \n    geom_label(x=2005, y=8000, label=\"Olivia has increased \\nafter 1990\", color=\"black\", size='6',  fill='#D3D3D3')   \n\n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Projects",
-      "Project 2"
-    ]
-  },
-  {
-    "objectID": "460_Projects/project6.html",
-    "href": "460_Projects/project6.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "460_Projects/project2.html",
-    "href": "460_Projects/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "460_Projects/project0.html",
-    "href": "460_Projects/project0.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "460_Projects/project1.html",
-    "href": "460_Projects/project1.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_06.html",
-    "href": "350_Projects/week_06.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_05.html",
-    "href": "350_Projects/week_05.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_10.html",
-    "href": "350_Projects/week_10.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_04.html",
-    "href": "350_Projects/week_04.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_09.html",
-    "href": "350_Projects/week_09.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_11.html",
-    "href": "350_Projects/week_11.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_01.html",
-    "href": "350_Projects/week_01.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Templates/DS250_Template.html",
-    "href": "Templates/DS250_Template.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Uncomment the entire section to use this template and rename this header with your project title\n\n\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "450_Projects/project6.html",
-    "href": "450_Projects/project6.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "450_Projects/project2.html",
-    "href": "450_Projects/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "450_Projects/project0.html",
-    "href": "450_Projects/project0.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "450_Projects/project1.html",
-    "href": "450_Projects/project1.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "250_projects.html",
-    "href": "250_projects.html",
-    "title": "Projects",
-    "section": "",
-    "text": "Project 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6\nProject 7",
-    "crumbs": [
-      "Projects"
-    ]
-  },
-  {
-    "objectID": "250_projects.html#repo-for-all-my-projects",
-    "href": "250_projects.html#repo-for-all-my-projects",
-    "title": "Projects",
-    "section": "",
-    "text": "Project 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6\nProject 7",
-    "crumbs": [
-      "Projects"
-    ]
-  },
-  {
-    "objectID": "450_Projects/project4.html",
-    "href": "450_Projects/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "450_Projects/project5.html",
-    "href": "450_Projects/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "450_Projects/project3.html",
-    "href": "450_Projects/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Templates/DS350_Template.html",
-    "href": "Templates/DS350_Template.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Data Science Portofolio",
-    "section": "",
-    "text": "MarkDown Basics\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_07.html",
-    "href": "350_Projects/week_07.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_03.html",
-    "href": "350_Projects/week_03.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_08.html",
-    "href": "350_Projects/week_08.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_13.html",
-    "href": "350_Projects/week_13.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_12.html",
-    "href": "350_Projects/week_12.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_Projects/week_02.html",
-    "href": "350_Projects/week_02.html",
-    "title": "Weekly Notes",
-    "section": "",
-    "text": "Weekly Notes\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "460_projects.html",
-    "href": "460_projects.html",
-    "title": "DS460 Projects",
-    "section": "",
-    "text": "Project 0\nProject 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6"
-  },
-  {
-    "objectID": "460_projects.html#repo-for-all-my-projects",
-    "href": "460_projects.html#repo-for-all-my-projects",
-    "title": "DS460 Projects",
-    "section": "",
-    "text": "Project 0\nProject 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6"
-  },
-  {
-    "objectID": "460_Projects/project4.html",
-    "href": "460_Projects/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "460_Projects/project5.html",
-    "href": "460_Projects/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "460_Projects/project3.html",
-    "href": "460_Projects/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "350_projects.html",
-    "href": "350_projects.html",
-    "title": "DS350 Projects",
-    "section": "",
-    "text": "Week 01\nWeek 02\nWeek 03\nWeek 04\nWeek 05\nWeek 06\nWeek 07\nWeek 08\nWeek 09\nWeek 10\nWeek 11\nWeek 12\nWeek 13"
-  },
-  {
-    "objectID": "350_projects.html#repo-for-all-my-projects",
-    "href": "350_projects.html#repo-for-all-my-projects",
-    "title": "DS350 Projects",
-    "section": "",
-    "text": "Week 01\nWeek 02\nWeek 03\nWeek 04\nWeek 05\nWeek 06\nWeek 07\nWeek 08\nWeek 09\nWeek 10\nWeek 11\nWeek 12\nWeek 13"
-  },
-  {
-    "objectID": "250_Projects/project4.html",
-    "href": "250_Projects/project4.html",
-    "title": "Can You Predict That?",
-    "section": "",
-    "text": "The clean air act of 1970 was the beginning of the end for the use of asbestos in home building. By 1976, the U.S. Environmental Protection Agency (EPA) was given authority to restrict the use of asbestos in paint. Homes built during and before this period are known to have materials with asbestos YOu can read more about this ban.\nThe state of Colorado has a large portion of their residential dwelling data that is missing the year built and they would like you to build a predictive model that can classify if a house is built pre 1980.\nColorado gave you home sales data for the city of Denver from 2013 on which to train your model. They said all the column names should be descriptive enough for your modeling and that they would like you to use the latest machine learning methods.\nhttps://github.com/byuidatascience/data4dwellings/blob/master/data.md",
-    "crumbs": [
-      "Projects",
-      "Project 5"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project4.html#client-request",
-    "href": "250_Projects/project4.html#client-request",
-    "title": "Can You Predict That?",
-    "section": "Client Request",
-    "text": "Client Request\nThe Client is a state agency in Colorado that is responsible for the health and safety of its residents. They have a large portion of their residential dwelling data that is missing the year built and they would like you to build a predictive model that can classify if a house is built pre 1980.",
-    "crumbs": [
-      "Projects",
-      "Project 5"
-    ]
-  },
-  {
-    "objectID": "250_Projects/project4.html#elevator-pitch",
-    "href": "250_Projects/project4.html#elevator-pitch",
-    "title": "Can You Predict That?",
-    "section": "Elevator pitch",
-    "text": "Elevator pitch\nThis project aims to predict whether a house was built before 1980 based on various features such as the number of bedrooms, bathrooms, square footage, and more. The dataset used for this project contains information on various houses in Denver, Colorado, and the goal is to build a predictive model that can accurately classify whether a house was built before 1980.\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nimport seaborn as sns\nfrom sklearn import tree\nimport matplotlib.pyplot as plt # for graphs}\nfrom lets_plot import *\nLetsPlot.setup_html()\n\n\n\n            \n            \n            \n\n\n\n\nLoad the data\n# data in local file\n#df = pd.read_json(r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\flights_missing.json\")\n\n\n\ndf = pd.read_csv(\"https://github.com/byuidatascience/data4dwellings/raw/master/data-raw/dwellings_ml/dwellings_ml.csv\")\n\n#online\n#https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json\n\n\n\n\nQuestion 1:\nCreate 2-3 charts that evaluate potential relationships between the home variables and before1980. Explain what you learn from the charts that could help a machine learning algorithm.\nFrom the correlation I learn that the variables that have the highest correlation with the target variable are: ybuilt, qualityB, noncars, gartypenon to mention a few.\n\n\nChart of relationships1\ncorrMatrix = df.corr()\n\nsns.heatmap(corrMatrix, annot=True, annot_kws={\"size\": 7})\nplt.title('Correlation Before Cleaning')\nplt.figure(figsize=(20, 10))\nplt.show()\n\n\n\n\n\n\n\n\n\n&lt;Figure size 1920x960 with 0 Axes&gt;\n\n\n\n\nx data\ndf_ready = df[['stories', 'arcstyle_END UNIT','arcstyle_ONE-STORY','arcstyle_TWO-STORY','basement','condition_Excel','condition_Good','gartype_Att','gartype_None','livearea','nocars','numbaths','quality_B','quality_C','yrbuilt','before1980' ]]\n\nprint(df_ready)\n\n\n\n\nChart of relationships2\ncorrMatrix = df_ready.corr()\nplt.title('Correlation After Cleaning')\nsns.heatmap(corrMatrix, annot=True, annot_kws={\"size\": 7})\nplt.figure(figsize=(20, 10))\n\nplt.show()\n\n\n\n\n\n\n\n\n\n&lt;Figure size 1920x960 with 0 Axes&gt;\n\n\n\n\nChart1\nfrom plotnine import ggplot, aes, geom_boxplot, geom_point, geom_bar, labs, theme_minimal, theme, element_text\n\n# 1. Boxplot\nboxplot_chart = (\n    ggplot(df_ready, aes(x='yrbuilt', y='livearea')) +\n    geom_point() +\n    labs(title='Distribution of Home Values',\n         subtitle='Comparison year and living area',\n         x='Built Before 1980', \n         y='Home Value') \n    #theme(plot_title=element_text(color='black', size=16, face='bold'))\n)\n\n# 2. Scatter Plot \nscatter_chart = (\n    ggplot(df_ready, aes(x='yrbuilt', y='basement', color='before1980')) +\n    geom_point(alpha=0.6) +\n    labs(title='ybuilt and basement',\n         subtitle='Colored by Homes Built Before and After 1980',\n         x='Square Footage', \n         y='Price') +\n    #theme_minimal() +\n    theme(plot_title=element_text(color='black', size=16, face='bold'))\n)\n\n# 3. Bar Chahrt\nbar_chart = (\n    ggplot(df_ready, aes(x='nocars', fill='before1980')) +\n    geom_bar(position='dodge') +\n    labs(title='Comparaison of noncars and before 1980',\n         subtitle='Built Before and After 1980',\n         x='Neighborhood', \n         y='Count')\n)\n\n# Display the charts\nprint(boxplot_chart)\nprint(scatter_chart)\nprint(bar_chart)\n\nboxplot_chart.save('plot1.png') \nscatter_chart.save('plot2.png') \nbar_chart.save('plot3.png') \n\n\n&lt;ggplot: (672 x 480)&gt;\n&lt;ggplot: (672 x 480)&gt;\n&lt;ggplot: (672 x 480)&gt;\n\n\n  \n\n\nQuestion 2:\nBuild a classification model labeling houses as being built “before 1980” or “during or after 1980”. Your goal is to reach or exceed 90% accuracy. Explain your final model choice (algorithm, tuning parameters, etc) and describe what other models you tried.\n\n\nbuilding_model\nX = df_ready[['stories', 'arcstyle_END UNIT','arcstyle_ONE-STORY','arcstyle_TWO-STORY','basement','condition_Excel','condition_Good','gartype_Att','gartype_None','nocars','numbaths','quality_B','quality_C']]\n\ny=df_ready['before1980']\n\n\n\n\ntraining\nfrom sklearn.model_selection import train_test_split\n\nX_train, X_test, y_train, y_test = train_test_split(\n          X, y, test_size=0.3, random_state=1)\n\n\n\n\nrunning_model\nclf = tree.DecisionTreeClassifier(max_leaf_nodes=5500)\nclf = clf.fit(X_train, y_train)\n\n\n\n\nAccuracy\ntest_predictions=clf.predict(X_test)\n\n#Accuracy\nfrom sklearn.metrics import accuracy_score\naccuracy_score(y_test, test_predictions)\n\n\n0.8898748908932208\n\n\n\n\nQuestion 3:\nJustify your classification model by discussing the most important features selected by your model. This discussion should include a feature importance chart and a description of the features.\nThe most important features selected by the model are: conditon Excel, gartype?none, quality?B, arctstyle-story, arcstyle-end-unit. It seems that the model will pick these features becasue it looks like there is a pattern of use of asbestos in paint in some houses by these specific features.\n\n\nimportance\nimportance = clf.feature_importances_\ndf = pd.DataFrame(list(zip(importance, X.columns.to_list())),columns =['importance', 'feature'])\n#print(importance,X.columns.to_list())\n\ndf = df.sort_values(by='importance')\ndf.head()\n\n\n\n\n\n\n\n\n\nimportance\nfeature\n\n\n\n\n5\n0.000311\ncondition_Excel\n\n\n8\n0.004126\ngartype_None\n\n\n3\n0.010798\narcstyle_TWO-STORY\n\n\n11\n0.011169\nquality_B\n\n\n1\n0.023730\narcstyle_END UNIT\n\n\n\n\n\n\n\n\n\nQuestion 4:\nDescribe the quality of your classification model using 2-3 different evaluation metrics. You also need to explain how to interpret each of the evaluation metrics you use.\nI have used the classification report to evaluate the model. The classification report provides a detailed breakdown of the model’s performance on each class. It includes metrics such as precision, recall, and F1-score for each class.\nPrecision is the ratio of true positives to the sum of true positives and false positives. It measures the accuracy of positive predictions, indicating the proportion of predictions labeled as positive that are actually correct.\nRecall is the ratio of true positives to the sum of true positives and false negatives. It measures the coverage of actual positives, showing the proportion of actual positive cases that are correctly identified by the model.\n\n\nevaluation_metrics\nfrom sklearn.metrics import classification_report\nprint(classification_report(y_test, test_predictions))\n\n\n              precision    recall  f1-score   support\n\n           0       0.85      0.86      0.85      2572\n           1       0.92      0.91      0.91      4302\n\n    accuracy                           0.89      6874\n   macro avg       0.88      0.88      0.88      6874\nweighted avg       0.89      0.89      0.89      6874",
-    "crumbs": [
-      "Projects",
-      "Project 5"
-    ]
-  },
-  {
     "objectID": "250_Projects/project5.html",
     "href": "250_Projects/project5.html",
     "title": "Client Report - The War with Star Wars",
@@ -543,25 +164,397 @@
     ]
   },
   {
-    "objectID": "250_Projects/project7.html#client-request",
-    "href": "250_Projects/project7.html#client-request",
+    "objectID": "250_Projects/project4.html",
+    "href": "250_Projects/project4.html",
+    "title": "Can You Predict That?",
+    "section": "",
+    "text": "The clean air act of 1970 was the beginning of the end for the use of asbestos in home building. By 1976, the U.S. Environmental Protection Agency (EPA) was given authority to restrict the use of asbestos in paint. Homes built during and before this period are known to have materials with asbestos YOu can read more about this ban.\nThe state of Colorado has a large portion of their residential dwelling data that is missing the year built and they would like you to build a predictive model that can classify if a house is built pre 1980.\nColorado gave you home sales data for the city of Denver from 2013 on which to train your model. They said all the column names should be descriptive enough for your modeling and that they would like you to use the latest machine learning methods.\nhttps://github.com/byuidatascience/data4dwellings/blob/master/data.md",
+    "crumbs": [
+      "Projects",
+      "Project 5"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project4.html#client-request",
+    "href": "250_Projects/project4.html#client-request",
+    "title": "Can You Predict That?",
+    "section": "Client Request",
+    "text": "Client Request\nThe Client is a state agency in Colorado that is responsible for the health and safety of its residents. They have a large portion of their residential dwelling data that is missing the year built and they would like you to build a predictive model that can classify if a house is built pre 1980.",
+    "crumbs": [
+      "Projects",
+      "Project 5"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project4.html#elevator-pitch",
+    "href": "250_Projects/project4.html#elevator-pitch",
+    "title": "Can You Predict That?",
+    "section": "Elevator pitch",
+    "text": "Elevator pitch\nThis project aims to predict whether a house was built before 1980 based on various features such as the number of bedrooms, bathrooms, square footage, and more. The dataset used for this project contains information on various houses in Denver, Colorado, and the goal is to build a predictive model that can accurately classify whether a house was built before 1980.\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nimport seaborn as sns\nfrom sklearn import tree\nimport matplotlib.pyplot as plt # for graphs}\nfrom lets_plot import *\nLetsPlot.setup_html()\n\n\n\n            \n            \n            \n\n\n\n\nLoad the data\n# data in local file\n#df = pd.read_json(r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\flights_missing.json\")\n\n\n\ndf = pd.read_csv(\"https://github.com/byuidatascience/data4dwellings/raw/master/data-raw/dwellings_ml/dwellings_ml.csv\")\n\n#online\n#https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json\n\n\n\n\nQuestion 1:\nCreate 2-3 charts that evaluate potential relationships between the home variables and before1980. Explain what you learn from the charts that could help a machine learning algorithm.\nFrom the correlation I learn that the variables that have the highest correlation with the target variable are: ybuilt, qualityB, noncars, gartypenon to mention a few.\n\n\nChart of relationships1\ncorrMatrix = df.corr()\n\nsns.heatmap(corrMatrix, annot=True, annot_kws={\"size\": 7})\nplt.title('Correlation Before Cleaning')\nplt.figure(figsize=(20, 10))\nplt.show()\n\n\n\n\n\n\n\n\n\n&lt;Figure size 1920x960 with 0 Axes&gt;\n\n\n\n\nx data\ndf_ready = df[['stories', 'arcstyle_END UNIT','arcstyle_ONE-STORY','arcstyle_TWO-STORY','basement','condition_Excel','condition_Good','gartype_Att','gartype_None','livearea','nocars','numbaths','quality_B','quality_C','yrbuilt','before1980' ]]\n\nprint(df_ready)\n\n\n\n\nChart of relationships2\ncorrMatrix = df_ready.corr()\nplt.title('Correlation After Cleaning')\nsns.heatmap(corrMatrix, annot=True, annot_kws={\"size\": 7})\nplt.figure(figsize=(20, 10))\n\nplt.show()\n\n\n\n\n\n\n\n\n\n&lt;Figure size 1920x960 with 0 Axes&gt;\n\n\n\n\nChart1\nfrom plotnine import ggplot, aes, geom_boxplot, geom_point, geom_bar, labs, theme_minimal, theme, element_text\n\n# 1. Boxplot\nboxplot_chart = (\n    ggplot(df_ready, aes(x='yrbuilt', y='livearea')) +\n    geom_point() +\n    labs(title='Distribution of Home Values',\n         subtitle='Comparison year and living area',\n         x='Built Before 1980', \n         y='Home Value') \n    #theme(plot_title=element_text(color='black', size=16, face='bold'))\n)\n\n# 2. Scatter Plot \nscatter_chart = (\n    ggplot(df_ready, aes(x='yrbuilt', y='basement', color='before1980')) +\n    geom_point(alpha=0.6) +\n    labs(title='ybuilt and basement',\n         subtitle='Colored by Homes Built Before and After 1980',\n         x='Square Footage', \n         y='Price') +\n    #theme_minimal() +\n    theme(plot_title=element_text(color='black', size=16, face='bold'))\n)\n\n# 3. Bar Chahrt\nbar_chart = (\n    ggplot(df_ready, aes(x='nocars', fill='before1980')) +\n    geom_bar(position='dodge') +\n    labs(title='Comparaison of noncars and before 1980',\n         subtitle='Built Before and After 1980',\n         x='Neighborhood', \n         y='Count')\n)\n\n# Display the charts\nprint(boxplot_chart)\nprint(scatter_chart)\nprint(bar_chart)\n\nboxplot_chart.save('plot1.png') \nscatter_chart.save('plot2.png') \nbar_chart.save('plot3.png') \n\n\n&lt;ggplot: (672 x 480)&gt;\n&lt;ggplot: (672 x 480)&gt;\n&lt;ggplot: (672 x 480)&gt;\n\n\n  \n\n\nQuestion 2:\nBuild a classification model labeling houses as being built “before 1980” or “during or after 1980”. Your goal is to reach or exceed 90% accuracy. Explain your final model choice (algorithm, tuning parameters, etc) and describe what other models you tried.\n\n\nbuilding_model\nX = df_ready[['stories', 'arcstyle_END UNIT','arcstyle_ONE-STORY','arcstyle_TWO-STORY','basement','condition_Excel','condition_Good','gartype_Att','gartype_None','nocars','numbaths','quality_B','quality_C']]\n\ny=df_ready['before1980']\n\n\n\n\ntraining\nfrom sklearn.model_selection import train_test_split\n\nX_train, X_test, y_train, y_test = train_test_split(\n          X, y, test_size=0.3, random_state=1)\n\n\n\n\nrunning_model\nclf = tree.DecisionTreeClassifier(max_leaf_nodes=5500)\nclf = clf.fit(X_train, y_train)\n\n\n\n\nAccuracy\ntest_predictions=clf.predict(X_test)\n\n#Accuracy\nfrom sklearn.metrics import accuracy_score\naccuracy_score(y_test, test_predictions)\n\n\n0.8897294151876637\n\n\n\n\nQuestion 3:\nJustify your classification model by discussing the most important features selected by your model. This discussion should include a feature importance chart and a description of the features.\nThe most important features selected by the model are: conditon Excel, gartype?none, quality?B, arctstyle-story, arcstyle-end-unit. It seems that the model will pick these features becasue it looks like there is a pattern of use of asbestos in paint in some houses by these specific features.\n\n\nimportance\nimportance = clf.feature_importances_\ndf = pd.DataFrame(list(zip(importance, X.columns.to_list())),columns =['importance', 'feature'])\n#print(importance,X.columns.to_list())\n\ndf = df.sort_values(by='importance')\ndf.head()\n\n\n\n\n\n\n\n\n\nimportance\nfeature\n\n\n\n\n5\n0.000167\ncondition_Excel\n\n\n8\n0.002010\ngartype_None\n\n\n11\n0.009865\nquality_B\n\n\n3\n0.010496\narcstyle_TWO-STORY\n\n\n1\n0.023401\narcstyle_END UNIT\n\n\n\n\n\n\n\n\n\nQuestion 4:\nDescribe the quality of your classification model using 2-3 different evaluation metrics. You also need to explain how to interpret each of the evaluation metrics you use.\nI have used the classification report to evaluate the model. The classification report provides a detailed breakdown of the model’s performance on each class. It includes metrics such as precision, recall, and F1-score for each class.\nPrecision is the ratio of true positives to the sum of true positives and false positives. It measures the accuracy of positive predictions, indicating the proportion of predictions labeled as positive that are actually correct.\nRecall is the ratio of true positives to the sum of true positives and false negatives. It measures the coverage of actual positives, showing the proportion of actual positive cases that are correctly identified by the model.\n\n\nevaluation_metrics\nfrom sklearn.metrics import classification_report\nprint(classification_report(y_test, test_predictions))\n\n\n              precision    recall  f1-score   support\n\n           0       0.85      0.86      0.85      2572\n           1       0.92      0.91      0.91      4302\n\n    accuracy                           0.89      6874\n   macro avg       0.88      0.88      0.88      6874\nweighted avg       0.89      0.89      0.89      6874",
+    "crumbs": [
+      "Projects",
+      "Project 5"
+    ]
+  },
+  {
+    "objectID": "350_projects.html",
+    "href": "350_projects.html",
+    "title": "DS350 Projects",
+    "section": "",
+    "text": "Week 01\nWeek 02\nWeek 03\nWeek 04\nWeek 05\nWeek 06\nWeek 07\nWeek 08\nWeek 09\nWeek 10\nWeek 11\nWeek 12\nWeek 13"
+  },
+  {
+    "objectID": "350_projects.html#repo-for-all-my-projects",
+    "href": "350_projects.html#repo-for-all-my-projects",
+    "title": "DS350 Projects",
+    "section": "",
+    "text": "Week 01\nWeek 02\nWeek 03\nWeek 04\nWeek 05\nWeek 06\nWeek 07\nWeek 08\nWeek 09\nWeek 10\nWeek 11\nWeek 12\nWeek 13"
+  },
+  {
+    "objectID": "460_Projects/project3.html",
+    "href": "460_Projects/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_Projects/project5.html",
+    "href": "460_Projects/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_Projects/project4.html",
+    "href": "460_Projects/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_projects.html",
+    "href": "460_projects.html",
+    "title": "DS460 Projects",
+    "section": "",
+    "text": "Project 0\nProject 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6"
+  },
+  {
+    "objectID": "460_projects.html#repo-for-all-my-projects",
+    "href": "460_projects.html#repo-for-all-my-projects",
+    "title": "DS460 Projects",
+    "section": "",
+    "text": "Project 0\nProject 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6"
+  },
+  {
+    "objectID": "350_Projects/week_02.html",
+    "href": "350_Projects/week_02.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_12.html",
+    "href": "350_Projects/week_12.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_13.html",
+    "href": "350_Projects/week_13.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_08.html",
+    "href": "350_Projects/week_08.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_03.html",
+    "href": "350_Projects/week_03.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_07.html",
+    "href": "350_Projects/week_07.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Data Science Portofolio",
+    "section": "",
+    "text": "MarkDown Basics\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Templates/DS350_Template.html",
+    "href": "Templates/DS350_Template.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "450_Projects/project3.html",
+    "href": "450_Projects/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "450_Projects/project5.html",
+    "href": "450_Projects/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "450_Projects/project4.html",
+    "href": "450_Projects/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "250_projects.html",
+    "href": "250_projects.html",
+    "title": "Projects",
+    "section": "",
+    "text": "Project 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6\nProject 7",
+    "crumbs": [
+      "Projects"
+    ]
+  },
+  {
+    "objectID": "250_projects.html#repo-for-all-my-projects",
+    "href": "250_projects.html#repo-for-all-my-projects",
+    "title": "Projects",
+    "section": "",
+    "text": "Project 1\nProject 2\nProject 3\nProject 4\nProject 5\nProject 6\nProject 7",
+    "crumbs": [
+      "Projects"
+    ]
+  },
+  {
+    "objectID": "450_Projects/project1.html",
+    "href": "450_Projects/project1.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "450_Projects/project0.html",
+    "href": "450_Projects/project0.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "450_Projects/project2.html",
+    "href": "450_Projects/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "450_Projects/project6.html",
+    "href": "450_Projects/project6.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Templates/DS250_Template.html",
+    "href": "Templates/DS250_Template.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Uncomment the entire section to use this template and rename this header with your project title\n\n\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_01.html",
+    "href": "350_Projects/week_01.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_11.html",
+    "href": "350_Projects/week_11.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_09.html",
+    "href": "350_Projects/week_09.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_04.html",
+    "href": "350_Projects/week_04.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_10.html",
+    "href": "350_Projects/week_10.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_05.html",
+    "href": "350_Projects/week_05.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "350_Projects/week_06.html",
+    "href": "350_Projects/week_06.html",
+    "title": "Weekly Notes",
+    "section": "",
+    "text": "Weekly Notes\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_Projects/project1.html",
+    "href": "460_Projects/project1.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_Projects/project0.html",
+    "href": "460_Projects/project0.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_Projects/project2.html",
+    "href": "460_Projects/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "460_Projects/project6.html",
+    "href": "460_Projects/project6.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "250_Projects/project1.html",
+    "href": "250_Projects/project1.html",
+    "title": "Client Report - What is in a Name?",
+    "section": "",
+    "text": "Background\nEarly in prehistory, some descriptive names began to be used again and again until they formed a name pool for a particular culture. Parents would choose names from the pool of existing names rather than invent new ones for their children.\nWith the rise of Christianity, certain trends in naming practices manifested. Christians were encouraged to name their children after saints and martyrs of the church. These early Christian names can be found in many cultures today, in various forms. These were spread by early missionaries throughout the Mediterranean basin and Europe.\nBy the Middle Ages, the Christian influence on naming practices was pervasive. Each culture had its pool of names, which were a combination of native names and early Christian names that had been in the language long enough to be considered native.\n\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nfrom lets_plot import *\nLetsPlot.setup_html()\nfrom datetime import datetime\n\n\n\n            \n            \n            \n\n\n\n\nLoad the data\n# data in local file\n#df = pd.read_csv(r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\names_year.csv\")\n\n\n\ndf = pd.read_csv('https://raw.githubusercontent.com/byuidatascience/data4names/refs/heads/master/data-raw/names_year/names_year.csv')\n\n#local\n#r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\names_year.csv\"\n\n#online\n#https://raw.githubusercontent.com/byuidatascience/data4names/refs/heads/master/data-raw/names_year/names_year.csv'\n\n\n\n\nTiding 1\n# check for missing and na values\n\ndf.isna()\ndf.isnull()\ndf.dropna(inplace=True)\n\n\n\n\nTide data 2\n# group df by name and summarize\n\ndf_grouped = df.groupby(['name', 'year']).agg(total=('Total', 'sum')).reset_index()\n#df_grouped.head(10)\n\n\n\n\nElevator pitch\nThis project aims to explore understand the use of a name over time. The use of group funtion and sum will be used to show the use of a name over time.\n\n\nRequirements\nFor Project 1 the answer to each question should include a chart and a written response. The years labels on your charts should not include a comma. At least two of your charts must include reference marks.\n\n\nQuestion 1:\nHow does your name at your birth year compare to its use historically?\nThis following graph show that my name has increased its used over the years from less than a 1000 to more than 10000 in 40 years.\n\n\nPlot 1\ndf_grouped1= df_grouped[df_grouped['name'] == 'Gabriel']\nimport numpy as np\ntrend_text='Incresing accerelating \\n after 1980'\n\n(\n  ggplot(df_grouped1, aes(x='year', y='total', color='name')) +\n    geom_line(color='blue') + \n    geom_point(color='blue') +\n    labs(title='Names from 1900 to 2022',\n         subtitle='Use of Gabriel is increasing', \n         x='Year', \n         y='Total Numbers') +\n    theme_bw() +  # Base theme\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1900, 2030, 20).astype(int),  \n                       limits=(1900, 2020)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df_grouped1['total'].max()) + 1, 2000), \n                       limits=(0, int(df_grouped1['total'].max()))) +  # Set start and end for y-axis\n    # Title and subtitle styling\n    theme(plot_title=element_text(color='black', size=18, face='bold'),\n          plot_subtitle=element_text(color='Blue', size=14, face='italic'))+ # Subtitle styling+\n    geom_label(x=1980, y=6000, label=trend_text, color=\"black\", size='6', fill='#D3D3D3')\n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\nQuestion 2:\nIf you talked to someone named Brittany on the phone, what is your guess of his or her age? What ages would you not guess?\nBased on the graph, I would guess that I will be taking to a person betweeen 20 and 30 years old. I would not guess that I will be talking to a person over 40 years old and lest than 10 years old.\n\n\nPlot 2\ntoday = datetime.now()  # Get the current date and time\ntrend_text = \"Concentration of Brittany  \\n between 80 and 90\"\n\n# Calculate the actual year difference\n\ndf['actual_year'] = today.year - df['year']\ndf2 = df[df['name']=='Brittany']  \n\n'''\ndf_grouped2 = df2.groupby(['name', 'year']).agg(\n    Total=('Total', 'sum'),\n    Age=('actual_year', 'mean')\n).reset_index()\n'''\n#keeping name, year\ndf2 = df2[['name', 'year', 'Total', 'actual_year']]\n(\n  ggplot(df2, aes(x='year', y='actual_year', size='Total')) +\n    geom_line(color='black') + \n    geom_point(color='#103d85') +\n    labs(title='Use of the name Brittany from 1960 to 2010',\n         subtitle='80 and 90 has more density', \n         x='Year', \n         y='Total Numbers') +\n    theme_bw() +  # Base theme\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1960, 2018, 10).astype(int),  \n                       limits=(1960, 2020)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df2['actual_year'].max()) + 1, 10), \n                       limits=(0, int(df2['actual_year'].max()))) +  # Set start and end for y-axis\n    # Title and subtitle styling\n    theme(plot_title=element_text(color='black', size=18, face='bold'),\n          plot_subtitle=element_text(color='#4287f5', size=14, face='italic')\n          )  # Subtitle styling\n    # Adding a label \n    +geom_label(x=2005, y=40, label=trend_text, color=\"black\", size='6', fill='#D3D3D3')\n    #geom_text(data=last_points, aes(x='year', y='total', label=name))\n  \n\n\n\n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\nQuestion 3:\nMary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?\nThe trend indicates that the use of names of Mary and Paul have declined over the years more than Martha and Peter.\n\n\nPlot 3\ndf_grouped3 = df_grouped[df_grouped['name'].isin(['Mary', 'Martha', 'Peter', 'Paul'])]\n\n#Checking the unique names\n# df_grouped3['name'].unique()\n\n# Define your label text\ntrend_text = \"Significant decline \\nafter 2,000\"\nlast_points = df_grouped3.groupby('name').last().reset_index()\n\n(\n    ggplot(df_grouped3, aes(x='year', y='total', color='name')) +  # Color by 'name'\n    geom_line() +\n    geom_line(aes(size=(df_grouped3['name'].map({'Mary': 2, 'Martha': 1, 'Peter': 1, 'Paul': 2})))) +\n    labs(title='Selected Names Analysis',\n         subtitle='Mary, Martha, Peter, Paul through the years', \n         x='Year', \n         y='Total Numbers') +\n      # Base theme\n    theme_bw() +\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1970, 2020, 10).astype(int),  \n                       limits=(1970, 2015)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df_grouped3['total'].max()) + 1, 5000), \n                       limits=(0, 20000)) +  # Set start and end for y-axis\n    # Title and subtitle styling\n   theme(\n        plot_title=element_text(color='black', size=20, face='bold'),\n        plot_subtitle=element_text(color='#4287f5', size=16, face='regular'),\n        #legend_position=\"none\"  # Remove legends,\n    ) +\n    # Adding a label \n    geom_label(x=2005, y=8000, label=trend_text, color=\"black\", size='6',  fill='#D3D3D3')  \n  \n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\nQuestion 4:\nThink of a unique name from a famous movie. Plot the usage of that name and see how changes line up with the movie release. Does it look like the movie had an effect on usage?\nI picked the name Olivia for actress of the movie “Grease”. The movie was released in 1978. The usage of the name Olivia increased after the movie was released aroudn 1990.\n\n\nPlot 4\ndf_grouped4 = df_grouped[df_grouped['name'].isin(['Olivia'])]\n\n(\n    ggplot(df_grouped4, aes(x='year', y='total', color='name')) +  # Color by 'name'\n    geom_line()+\n     labs(title='Unique name from a famous movie Analysis',\n         subtitle='Movie Grease released in 1990', \n         x='Year', \n         y='Total Numbers') +\n      # Base theme\n    theme_classic() +\n    # Customized x-axis\n    scale_x_continuous(breaks=np.arange(1970, 2020, 10).astype(int),  \n                       limits=(1970, 2015)) +  # Set start and end for x-axis\n    # Customized y-axis\n    scale_y_continuous(breaks=np.arange(0, int(df_grouped3['total'].max()) + 1, 5000), \n                       limits=(0, 20000)) +  # Set start and end for y-axis\n    # Title and subtitle styling\n   theme(\n        plot_title=element_text(color='black', size=20, face='bold'),\n        plot_subtitle=element_text(color='#4287f5', size=16, face='regular'),\n        #legend_position=\"none\"  # Remove legends,\n    ) +\n    # Adding a label \n    geom_label(x=2005, y=8000, label=\"Olivia has increased \\nafter 1990\", color=\"black\", size='6',  fill='#D3D3D3')   \n\n)\n\n\n   \n   \nSource: Names from years csv\n\n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Projects",
+      "Project 2"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project0.html",
+    "href": "250_Projects/project0.html",
+    "title": "Client Report - Introduction",
+    "section": "",
+    "text": "Introduction\nObjective: Preparation, and first example\nSet upand questions are included in this project .\n\n\nLibraries\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nfrom lets_plot import *\nLetsPlot.setup_html()\n\n\n\n            \n            \n            \n\n\n\n\nElevator pitch\nThis project aims to explore the different tools for future projects and also the use of markdown and Quarto for reports and documents. It will also use and explore the Python libraries pandas, numpy, and plotly.\n\n\nQuestion 1:\nFinish the Course Setup, and post any questions to getting your environment working smoothly in your course Slack channel\nI finished the Course Setup and I posted a question on Slack.\n\n\nQuestion 2\nRecreate the example chart from PY4DS: CH2 Data Visualization of the textbook\n\n\nLoad the data\n# Include and execute your code here\nfrom palmerpenguins import load_penguins\ndf = penguins = load_penguins()\n\n\n\n\nPlot 1\n(\n    ggplot(data=penguins, mapping=aes(x=\"flipper_length_mm\", y=\"body_mass_g\"))\n    + geom_point(mapping=aes(color=\"species\", shape=\"species\"))\n    + geom_smooth(method=\"lm\")\n    + labs(\n        title=\"Body mass and flipper length\",\n        subtitle=\"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n        x=\"Flipper length (mm)\",\n        y=\"Body mass (g)\",\n        color=\"Species\",\n        shape=\"Species\",\n    )+\n    theme(plot_title=element_text(color='black', size=18, face='bold'))\n\n)\n\n\n   \n   \nPenguins\n\n\n\n\nQuestion 3\nInclude the table created from PY4DS: CH2 Data Visualization used to create the above chart\nThis is the table created from PY4DS.\n\n\n|    | species   | island    |   bill_length_mm |   bill_depth_mm |   flipper_length_mm |   body_mass_g | sex    |   year |\n|---:|:----------|:----------|-----------------:|----------------:|--------------------:|--------------:|:-------|-------:|\n|  0 | Adelie    | Torgersen |             39.1 |            18.7 |                 181 |          3750 | male   |   2007 |\n|  1 | Adelie    | Torgersen |             39.5 |            17.4 |                 186 |          3800 | female |   2007 |\n|  2 | Adelie    | Torgersen |             40.3 |            18   |                 195 |          3250 | female |   2007 |\n|  3 | Adelie    | Torgersen |            nan   |           nan   |                 nan |           nan | nan    |   2007 |\n|  4 | Adelie    | Torgersen |             36.7 |            19.3 |                 193 |          3450 | female |   2007 |\n|  5 | Adelie    | Torgersen |             39.3 |            20.6 |                 190 |          3650 | male   |   2007 |\n|  6 | Adelie    | Torgersen |             38.9 |            17.8 |                 181 |          3625 | female |   2007 |\n|  7 | Adelie    | Torgersen |             39.2 |            19.6 |                 195 |          4675 | male   |   2007 |\n|  8 | Adelie    | Torgersen |             34.1 |            18.1 |                 193 |          3475 | nan    |   2007 |\n|  9 | Adelie    | Torgersen |             42   |            20.2 |                 190 |          4250 | nan    |   2007 |\n\n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Projects",
+      "Project 1"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project2.html",
+    "href": "250_Projects/project2.html",
+    "title": "Late Flights & Missing Data (JSON)",
+    "section": "",
+    "text": "Delayed flights are not something most people look forward to. In the best case scenario you may only wait a few extra minutes for the plane to be cleaned. However, those few minutes can stretch into hours if a mechanical issue is discovered or a storm develops. Arriving hours late may result in you missing a connecting flight, job interview, or your best friend’s wedding.\nIn 2003 the Bureau of Transportation Statistics (BTS) began collecting data on the causes of delayed flights. The categories they use are Air Carrier, National Aviation System, Weather, Late-Arriving Aircraft, and Security. You can visit the BTS website to read definitions of these categories.",
+    "crumbs": [
+      "Projects",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project2.html#client-request",
+    "href": "250_Projects/project2.html#client-request",
+    "title": "Late Flights & Missing Data (JSON)",
+    "section": "Client Request",
+    "text": "Client Request\nThe JSON file for this project contains information on delays at 7 airports over 10 years. Your task is to clean the data, search for insights about flight delays, and communicate your results to the Client. The Client is a CEO of a flight booking app who is interested in the causes of flight delays and wants to know which airports have the worst delays. They also want to know the best month to fly if you want to avoid delays of any length.",
+    "crumbs": [
+      "Projects",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project2.html#elevator-pitch",
+    "href": "250_Projects/project2.html#elevator-pitch",
+    "title": "Late Flights & Missing Data (JSON)",
+    "section": "Elevator pitch",
+    "text": "Elevator pitch\nIn this project, you will be working with a dataset that contains information about flight delays. The key value metrics are the number of flights, the number of delays, and the percentage of delays from 7 airports over a 10-year period.\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nfrom lets_plot import *\nLetsPlot.setup_html()\nfrom datetime import datetime\nimport calendar\n\n\n\n            \n            \n            \n\n\n\n\nLoad the data\n# data in local file\n#df = pd.read_json(r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\flights_missing.json\")\n\n\n\ndf = pd.read_json(\"https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json\")\n\n\n#local\n#r\"C:\\Users\\Gabriel Guerrero\\OneDrive - AVASA\\BYU-I\\DS 250 Data Coding\\db-projects\\names_year.csv\"\n\n#online\n#https://raw.githubusercontent.com/byuidatascience/data4missing/refs/heads/master/data-raw/flights_missing/flights_missing.json\n\n\n\n\nElevator pitch\nThis project aims to dela with missing data and how to handle it.\n\n\nQuestion 1:\nFix all of the varied missing data types in the data to be consistent (all missing values should be displayed as “NaN”). In your report include one record example (one row) from your new data, in the raw JSON format. Your example should display the “NaN” for at least one missing value.\nThe following record has a missing value in the “airline” column.\n::: {#cell-Record with missing value .cell execution_count=4}\n\nRecord with missing value\ndf.head(3)\n\n\n\n\n\n\n\n\n\nairport_code\nairport_name\nmonth\nyear\nnum_of_flights_total\nnum_of_delays_carrier\nnum_of_delays_late_aircraft\nnum_of_delays_nas\nnum_of_delays_security\nnum_of_delays_weather\nnum_of_delays_total\nminutes_delayed_carrier\nminutes_delayed_late_aircraft\nminutes_delayed_nas\nminutes_delayed_security\nminutes_delayed_weather\nminutes_delayed_total\n\n\n\n\n0\nATL\nAtlanta, GA: Hartsfield-Jackson Atlanta Intern...\nJanuary\n2005.0\n35048\n1500+\n-999\n4598\n10\n448\n8355\n116423.0\n104415\n207467.0\n297\n36931\n465533\n\n\n1\nDEN\nDenver, CO: Denver International\nJanuary\n2005.0\n12687\n1041\n928\n935\n11\n233\n3153\n53537.0\n70301\n36817.0\n363\n21779\n182797\n\n\n2\nIAD\n\nJanuary\n2005.0\n12381\n414\n1058\n895\n4\n61\n2430\nNaN\n70919\n35660.0\n208\n4497\n134881\n\n\n\n\n\n\n:::\n\n\nfuction for checking for missing data\ndf.head(2)\ndef check_for_na_null_empty(df):\n    #count na and null\n    nan_counts = df.isna().sum()\n\n\n    # Calculate empty string counts\n    empty_counts = df.applymap(lambda x: True if isinstance(x, str) and x == '' else False).sum()\n\n    # Combine results into a DataFrame\n    results = pd.DataFrame({\n        'NaN/Null': nan_counts,\n        '# String': empty_counts,\n  \n    })\n\n    return results\n\ncheck_for_na_null_empty(df)\n\n\n\n\nFix misssing data\ndf_clean=df.replace(r'^\\s*$', np.nan, regex=True)\ndf_clean = df_clean.fillna(\"NA\")\ncheck_for_na_null_empty(df_clean)\n\n\nThis is the same record as before, but now the missing value is displayed as “NA”.\n::: {#cell-Example NA .cell execution_count=7}\n\nExample NA\n# Show all rows where there is 'NA' in any column\ndf1=df_clean[df_clean.isin(['NA']).any(axis=1)]\n\ndf1.head(5)\n\n\n\n\n\n\n\n\n\nairport_code\nairport_name\nmonth\nyear\nnum_of_flights_total\nnum_of_delays_carrier\nnum_of_delays_late_aircraft\nnum_of_delays_nas\nnum_of_delays_security\nnum_of_delays_weather\nnum_of_delays_total\nminutes_delayed_carrier\nminutes_delayed_late_aircraft\nminutes_delayed_nas\nminutes_delayed_security\nminutes_delayed_weather\nminutes_delayed_total\n\n\n\n\n2\nIAD\nNA\nJanuary\n2005.0\n12381\n414\n1058\n895\n4\n61\n2430\nNA\n70919\n35660.0\n208\n4497\n134881\n\n\n9\nIAD\nWashington, DC: Washington Dulles International\nFebuary\n2005.0\n10042\n284\n631\n691\n4\n28\n1639\n15573.0\n39840\nNA\n169\n1359\n78878\n\n\n12\nSFO\nSan Francisco, CA: San Francisco International\nFebuary\n2005.0\n9327\n599\n457\n1010\n0\n57\n2122\n30760.0\n27302\nNA\n6\n3178\n110995\n\n\n13\nSLC\nNA\nFebuary\n2005.0\n12404\n645\n463\n752\n10\n79\n1947\n32336.0\n23087\n24544.0\n293\n4614\n84874\n\n\n14\nATL\nAtlanta, GA: Hartsfield-Jackson Atlanta Intern...\nMarch\n2005.0\n37806\n1462\n-999\n5697\n11\n423\n9431\nNA\n150766\n396191.0\n568\n33379\n691887\n\n\n\n\n\n\n:::\n\n\nQuestion 2:\nWhich airport has the worst delays? Describe the metric you chose, and why you chose it to determine the “worst” airport. Your answer should include a summary table that lists (for each airport) the total number of flights, total number of delayed flights, proportion of delayed flights, and average delay time in hours.\nThe airport with the worst delays is San Francisco International Airport according to the metric of the proportion of delayed flights. However, adding the time of delay to the metric of the proportion of delayed flights, the airport with the worst delays is Chicago and Atlanta.\n\n\nQuestion 2\n# df columns and types\ndf_clean.dtypes\n\n# create a new column to count the incidences\ndf_clean['incidences_count'] = 1  \n\n#group by 'airport_name', sum the 'incidences_count', and sum 'minutes_delayed_total'\nresult = df_clean.groupby('airport_name').agg(\n    count_incidences=('incidences_count', 'sum'), \n    num_of_flight_total=('num_of_flights_total', 'sum'),\n    num_of_delays_total=('num_of_delays_total', 'sum'),  \n    sum_min_delayed=('minutes_delayed_total', 'sum'),   \n\n)\n\n# Calculate percentage \nresult['percenta_delayed'] = (result['num_of_delays_total'] / result['num_of_flight_total']) * 100\n\n#calculate the average delay time in hours\nresult['avg_delay_hours'] = result['sum_min_delayed'] / 60\n\n# formatting percentage calculates\nresult['percenta_delayed'] = result['percenta_delayed'].apply(lambda x: f\"{x:.2f}%\")\n\n# Sort by 'sum_min_delayed' or another relevant column\n#sorting by 'sum_delayed\nresult_sorted = result.sort_values(by='percenta_delayed', ascending=False)\n\n# Formating the number\nresult_sorted['sum_min_delayed'] = result_sorted['sum_min_delayed'].apply(lambda x: f\"{x:,.0f}\")\nresult_sorted['avg_delay_hours'] = result_sorted['avg_delay_hours'].apply(lambda x: f\"{x:,.0f}\")\n\n# print markdown\nprint(result_sorted.to_markdown())\n\n\n| airport_name                                          |   count_incidences |   num_of_flight_total |   num_of_delays_total | sum_min_delayed   | percenta_delayed   | avg_delay_hours   |\n|:------------------------------------------------------|-------------------:|----------------------:|----------------------:|:------------------|:-------------------|:------------------|\n| San Francisco, CA: San Francisco International        |                127 |               1565257 |                408631 | 25,488,636        | 26.11%             | 424,811           |\n| Chicago, IL: Chicago O'Hare International             |                125 |               3400032 |                773122 | 52,165,135        | 22.74%             | 869,419           |\n| Atlanta, GA: Hartsfield-Jackson Atlanta International |                126 |               4235114 |                870910 | 52,114,971        | 20.56%             | 868,583           |\n| Washington, DC: Washington Dulles International       |                121 |                773480 |                152630 | 9,322,510         | 19.73%             | 155,375           |\n| NA                                                    |                 56 |                884879 |                172413 | 10,611,978        | 19.48%             | 176,866           |\n| San Diego, CA: San Diego International                |                125 |                870161 |                167747 | 7,922,432         | 19.28%             | 132,041           |\n| Denver, CO: Denver International                      |                122 |               2323376 |                439964 | 23,660,463        | 18.94%             | 394,341           |\n| Salt Lake City, UT: Salt Lake City International      |                122 |               1293072 |                190733 | 9,460,901         | 14.75%             | 157,682           |",
+    "crumbs": [
+      "Projects",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project2.html#question-3",
+    "href": "250_Projects/project2.html#question-3",
+    "title": "Late Flights & Missing Data (JSON)",
+    "section": "Question 3:",
+    "text": "Question 3:\nWhat is the best month to fly if you want to avoid delays of any length? Describe the metric you chose and why you chose it to calculate your answer. Include one chart to help support your answer, with the x-axis ordered by month. (To answer this question, you will need to remove any rows that are missing the Month variable.)\nThe best month to fly if you want to avoid delays of any length is November following by September. The metric I chose to calculate my answer is the sum of minutes delayed.\n\n\nQuestion 3\ndf3 = df_clean[['month', 'airport_code', 'year', 'minutes_delayed_total']]\n\n# Step 2: Remove rows month \ndf3 = df3.dropna(subset=['month'])  \ndf3 = df3[df3['month'] != 'n/a']  # Remove 'n/a' as a string\n\n# Aggregation\ndf3 = df3.groupby('month').agg(\n    sum_min_delayed=('minutes_delayed_total', 'sum')\n).reset_index()  # Reset the index to keep 'month' as a column\n\ndf3['month'] = pd.Categorical(df3['month'], categories=list(calendar.month_name)[1:], ordered=True)\n\n# ggplot graph \n(\n    ggplot(df3, aes(x='month', y='sum_min_delayed')) +\n    geom_line(color='black') +\n    geom_point(color='#103d85') +\n    labs(title='Delays Flights',\n         subtitle='Consolidated from January to December', \n         x='Months', \n         y='Total Minutes Delayed') +\n    theme_minimal2()+  # Base theme\n    theme(plot_title=element_text(color='black', size=22, face='bold'),\n          plot_subtitle=element_text(color='Blue', size=14, face='italic'))\n\n)\n\n\n   \n   \nSource: flights_missing JSON",
+    "crumbs": [
+      "Projects",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project2.html#questión-4",
+    "href": "250_Projects/project2.html#questión-4",
+    "title": "Late Flights & Missing Data (JSON)",
+    "section": "Questión 4:",
+    "text": "Questión 4:\nAccording to the BTS website, the “Weather” category only accounts for severe weather delays. Mild weather delays are not counted in the “Weather” category, but are actually included in both the “NAS” and “Late-Arriving Aircraft” categories. Your job is to create a new column that calculates the total number of flights delayed by weather (both severe and mild). You will need to replace all the missing values in the Late Aircraft variable with the mean. Show your work by printing the first 5 rows of data in a table. Use these three rules for your calculations\n\n100% of delayed flights in the Weather category are due to weather\n30% of all delayed flights in the Late-Arriving category are due to weather\nFrom April to August, 40% of delayed flights in the NAS category are due to weather. The rest of the months, the proportion rises to 65%.\n\n\n\ncleaning and formulas\n# Select columns\ndf4 = df[['month', 'airport_code', 'year', 'num_of_delays_weather', 'num_of_delays_late_aircraft', 'num_of_delays_nas']]\n\ndf4['month'].dropna(inplace=True)\n\n#mapping months\nmonth_mapping = {\n    'January': 1,\n    'February': 2,\n    'March': 3,\n    'April': 4,\n    'May': 5,\n    'June': 6,\n    'July': 7,\n    'August': 8,\n    'September': 9,\n    'October': 10,\n    'November': 11,\n    'December': 12\n}\n\n# Replace month names with their corresponding numbers\ndf4['month'] = df4['month'].map(month_mapping)\ndf4.head(5)\n\n\n\n\nwhere and calculation\n# Function to calculate NAS weather delays based on the month\ndef calculate_nas_weather_delays(row):\n    if 4 &lt;= row['month'] &lt;= 8:  # Between April and August \n        return 0.40 * row['num_of_delays_nas']\n    else:  # Other months\n        return 0.65 * row['num_of_delays_nas']\n\n# Apply using np where num_of_delays_late_aircraft is NaN\ndf4['total_weather_delays'] = np.where(\n    df4['num_of_delays_late_aircraft'].isna(),\n    \n    # Only for rows where 'num_of_delays_late_aircraft' is NaN\n    df4['num_of_delays_weather'] + 0.30 * df4['num_of_delays_late_aircraft'].fillna(0) + df4.apply(calculate_nas_weather_delays, axis=1),\n    \n    # For other rows, calculate normally\n    df4['num_of_delays_weather'] + df4['num_of_delays_late_aircraft'] + df4['num_of_delays_nas']\n)\n\n# Display the first 5 rows of the updated data\n#df4.head(50)\n\n\n\n\nfinal output\ndf5=df4.dropna()\ndf5.describe()\nprint(df5.head(5).to_markdown())\n\n\n|    |   month | airport_code   |   year |   num_of_delays_weather |   num_of_delays_late_aircraft |   num_of_delays_nas |   total_weather_delays |\n|---:|--------:|:---------------|-------:|------------------------:|------------------------------:|--------------------:|-----------------------:|\n|  0 |       1 | ATL            |   2005 |                     448 |                          -999 |                4598 |                   4047 |\n|  1 |       1 | DEN            |   2005 |                     233 |                           928 |                 935 |                   2096 |\n|  2 |       1 | IAD            |   2005 |                      61 |                          1058 |                 895 |                   2014 |\n|  3 |       1 | ORD            |   2005 |                     306 |                          2255 |                5415 |                   7976 |\n|  4 |       1 | SAN            |   2005 |                      56 |                           680 |                 638 |                   1374 |",
+    "crumbs": [
+      "Projects",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project2.html#question-5",
+    "href": "250_Projects/project2.html#question-5",
+    "title": "Late Flights & Missing Data (JSON)",
+    "section": "Question 5:",
+    "text": "Question 5:\nUsing the new weather variable calculated above, create a barplot showing the proportion of all flights that are delayed by weather at each airport. Describe what you learn from this graph.\nChicago International Airport (ORD) has the highest proportion of flights delayed by weather, followed by Atlanta (ATL) and San Francisco International(SFO) and Denver (DEN).\n\n\nShow the code\n# Aggregation\ndf5_group = df5.groupby('airport_code').agg(\n    sum_min_delayed=('total_weather_delays', 'sum')\n).reset_index()\n\n\n\n\nfinal output 5\n# higlight airport\nhighlight_airports = ['ORD', 'ATL', 'SFO','DEN'] \ndf5_group['highlight'] = df5_group['airport_code'].apply(lambda x: x if x in highlight_airports else 'Other')\n\n\n# Sorting based on sum_min_delayed in descending order\ndf5_group = df5_group.sort_values(by='sum_min_delayed', ascending=False)\n\n# ggplot graph \n(\n    ggplot(df5_group, aes(x='airport_code', y='sum_min_delayed', fill='highlight')) +  \n    geom_bar(stat='identity', color='black') + \n    scale_fill_manual(values={  # Custom color mapping\n        'SFO': 'red', \n        'DEN': 'red',  \n        'ATL': 'green',  \n        'ORD': 'blue',  \n        'Other': 'gray'  # Gray color for all other airports\n    }) + \n    labs(title='Delayed Flights by Airport',\n         subtitle='Highlighting Worst Airports', \n         x='Airport Code',\n         y='Total Minutes Delayed') +\n    theme_minimal() +  # Base theme\n    theme(plot_title=element_text(color='black', size=22, face='bold'),\n          plot_subtitle=element_text(color='blue', size=14, face='italic'))\n)",
+    "crumbs": [
+      "Projects",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "250_Projects/project6.html#client-request",
+    "href": "250_Projects/project6.html#client-request",
     "title": "Client Report - The War with Star Wars",
     "section": "Client Request",
     "text": "Client Request\n\nElevator pitch\n\n\nLibraries and Tide Data\n\n\nShow the code\nimport pandas as pd\nimport numpy as np\nimport plotly.express as px\nimport seaborn as sns\nfrom sklearn import tree\nimport matplotlib.pyplot as plt # for graphs}\nfrom lets_plot import *\nLetsPlot.setup_html()"
   },
   {
-    "objectID": "250_Projects/project7.html#question-1",
-    "href": "250_Projects/project7.html#question-1",
+    "objectID": "250_Projects/project6.html#question-1",
+    "href": "250_Projects/project6.html#question-1",
     "title": "Client Report - The War with Star Wars",
     "section": "Question 1",
     "text": "Question 1\nShorten the column names and clean them up for easier use with pandas. Provide a table or list that exemplifies how you fixed the names.\n#| label: project-data #| code-summary: Load the data #| include: false\n#samplE data random= pd.DataFrame(np.random.randint(0, 100, size=(100, 4)), columns=list(‘ABCD’))\nrandom.head()"
-  },
-  {
-    "objectID": "250_Projects/project6.html",
-    "href": "250_Projects/project6.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "resume.html",
