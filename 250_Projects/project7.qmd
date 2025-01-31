@@ -1,0 +1,69 @@
+---
+title: "Client Report - The War with Star Wars"
+subtitle: "Course DS 250"
+author: "Gabriel Guerrero"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+### Background
+
+## Client Request
+
+
+### Elevator pitch
+
+
+### Libraries and Tide Data
+```{python}
+#| label: libraries
+#| include: true
+
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import seaborn as sns
+from sklearn import tree
+import matplotlib.pyplot as plt # for graphs}
+from lets_plot import *
+LetsPlot.setup_html()
+
+
+```
+
+## Question 1
+
+**Shorten the column names and clean them up for easier use with pandas. Provide a table or list that exemplifies how you fixed the names.**
+
+
+```{python}
+#| label: project-data
+#| code-summary: Load the data
+#| include: false
+
+#samplE data
+random= pd.DataFrame(np.random.randint(0, 100, size=(100, 4)), columns=list('ABCD'))
+
+
+random.head()
+
+
