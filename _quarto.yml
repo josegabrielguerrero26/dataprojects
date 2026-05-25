@@ -21,8 +21,8 @@ website:
     right:
       - text: "Home"
         file: index.qmd
-      - text: "My Resume"
-        file: resume.qmd
+      #- text: "My Resume"
+      #  file: resume.qmd
       - text: "Projects"
         file: 250_projects.qmd
       # - text: "DS350 Projects"

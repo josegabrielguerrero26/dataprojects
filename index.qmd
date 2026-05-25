@@ -1,10 +1,12 @@
 ---
-title: "Data Science Portofolio\n "
-subtitle: "Welcome to my Data Portfolio!<br> I am a dedicated data professional with a passion for turning raw data into actionable insights that drive business decisions. Over the course of my career, I’ve developed expertise in data analysis, visualization, and predictive modeling, leveraging tools such as SQL, Power BI, Python, R and more. This portfolio showcases a range of projects where I’ve applied my skills to solve real-world problems, optimize processes, and deliver impactful results. Please explore the examples below to see how I approach data challenges and generate value through data-driven solutions."
-# use quarto markdown to 
+title: "Data Science Portfolio"
+subtitle: "Welcome to my Data & AI Portfolio."
 ---
 
+This portfolio highlights how I leverage data, analytics, machine learning, and AI to solve complex business problems, improve operational performance, and support executive decision-making at enterprise scale.
 
+Throughout my career leading technology, analytics, and transformation initiatives across multi-brand and high-transaction organizations, I have built data-driven solutions spanning predictive modeling, business intelligence, operational analytics, automation, and digital optimization.
 
-[MarkDown Basics](https://quarto.org/docs/authoring/markdown-basics.html#links-images)
+The examples presented here reflect real-world applications of SQL, Python, Power BI, machine learning, and cloud technologies to drive measurable business impact — including revenue growth, operational efficiency, customer experience, and strategic visibility.
 
+This portfolio represents my approach to modern leadership at the intersection of technology, business strategy, data, and AI.
