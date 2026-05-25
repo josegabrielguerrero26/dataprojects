@@ -116,7 +116,7 @@ def check_for_na_null_empty(df):
 
 
     # Calculate empty string counts
-    empty_counts = df.applymap(lambda x: True if isinstance(x, str) and x == '' else False).sum()
+    empty_counts = df.map(lambda x: True if isinstance(x, str) and x == '' else False).sum()
 
     # Combine results into a DataFrame
     results = pd.DataFrame({
